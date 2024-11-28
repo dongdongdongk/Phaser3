@@ -15,11 +15,12 @@ const config = {
 }
 
 function preload() {
-  debugger
+  this.load.image('sky', 'assets/sky.png');
 }
 
 function create() {
-  debugger
+  // this.add.image(config.width / 2, config.height / 2, 'sky');
+  this.add.image(0, 0, 'sky').setOrigin(0, 0.5)
 }
 
 
