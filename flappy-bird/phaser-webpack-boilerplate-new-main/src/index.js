@@ -8,7 +8,7 @@ const config = {
   physics: {
     default: 'arcade',
     arcade: {
-      // gravity: { y: 200 }
+      // gravity: { y: 400 },
       debug: true
     }
   },
@@ -22,31 +22,59 @@ const config = {
 function preload() {
   this.load.image('sky', 'assets/sky.png');
   this.load.image('bird', 'assets/bird.png');
+  this.load.image('pipe', 'assets/pipe.png');
 }
 
 const VELOCITY = 200;
+const flapVelocity = 250;
+const initialBirdPosition = { x: config.width * 0.1, y: config.height /2 }
 
 let bird = null;
-let totalDelta = null;
+let upperPipe = null;
+let lowerPipe = null;
+
+
 
 function create() {
   this.add.image(0, 0, 'sky').setOrigin(0);
 
-  bird = this.physics.add.sprite(config.width * 0.1, config.height / 2, 'bird').setOrigin(0);
-  bird.body.velocity.x = VELOCITY;
+  bird = this.physics.add.sprite(initialBirdPosition.x, initialBirdPosition.y, 'bird').setOrigin(0);
+  bird.body.gravity.y = 400;
+  
+  upperPipe = this.physics.add.sprite(400, 100, 'pipe').setOrigin(0, 1);
+  lowerPipe = this.physics.add.sprite(400, upperPipe.y + 100 , 'pipe').setOrigin(0, 0);
+  
+  
+  this.input.on('pointerdown', flap);
+
+  this.spaceKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
 }
+
+
 
 // 60fps
 // 60 times 
-function update(time, delta) {
-  // 새의 위치 X가 캔버스의 너비와 같거나 더 크다면,왼쪽으로 돌아간다.
-  // 그리고 새의 위치 x가 0보다 작거나 같으면 오른쪽으로 다시 이동한다.
-  if( bird.x >= config.width - bird.width) { // - bird.width 를 해주는건 스프라이트가 마지막에 화면 밖으로 나가기 떄문 
-    bird.body.velocity.x = -VELOCITY;
-  } else if ( bird.x <=0 ) {
-    bird.body.velocity.x = VELOCITY;
+function update() {
+  
+    // 스페이스바가 눌렸는지 확인
+  if (this.spaceKey.isDown) {
+    flap();
   }
 
+  if(bird.y > config.height || bird.y < -bird.height) {
+    restartBirdPosition();
+  }
+}
+
+function restartBirdPosition() {
+  bird.x = initialBirdPosition.x;
+  bird.y = initialBirdPosition.y;
+  bird.body.velocity.y = 0;
+  alert("패배");
+}
+
+function flap() {
+  bird.body.velocity.y = -flapVelocity;
 }
 
 
