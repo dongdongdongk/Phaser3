@@ -1,12 +1,9 @@
 import Phaser from "phaser";
 
 class PlayScene extends Phaser.Scene {
-  constructor() {
+  constructor(config) {
     super("PlayScene");
-    this.initalBirdPosition = {
-      x: 80,
-      y: 300,
-    };
+    this.config = config;
     this.bird = null;
   }
 
