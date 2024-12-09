@@ -1,9 +1,10 @@
 import Phaser from "phaser";
+import PlayScene from "./scenes/PlayScene";
 
 const config = {
   // WebGL (Web graphics library) JS Api for rendering 2D and 3D graphics
   type: Phaser.AUTO,
-  width: 800,
+  width: 2800,
   height: 600,
   physics: {
     // Arcade physics plugin, manages physics simulation
@@ -12,11 +13,7 @@ const config = {
       debug: true,
     },
   },
-  scene: {
-    preload,
-    create,
-    update,
-  },
+  scene: [PlayScene]
 };
 
 const VELOCITY = 200;
@@ -34,18 +31,10 @@ const flapVelocity = 250;
 const initalBirdPosition = { x: config.width * 0.1, y: config.height / 2 };
 
 function preload() {
-  this.load.image("sky", "assets/sky.png");
-  this.load.image("bird", "assets/bird.png");
   this.load.image("pipe", "assets/pipe.png");
 }
 
 function create() {
-  this.add.image(0, 0, "sky").setOrigin(0);
-  bird = this.physics.add
-    .sprite(initalBirdPosition.x, initalBirdPosition.y, "bird")
-    .setOrigin(0);
-  bird.body.gravity.y = 400;
-
   pipes = this.physics.add.group();
 
   for (let i = 0; i < PIPES_TO_RENDER; i++) {
@@ -74,6 +63,8 @@ function update(time, delta) {
   if (this.spaceKey.isDown) {
     flap();
   }
+
+  recyclePipes();
 }
 
 function placePipe(uPipe, lPipe) {
@@ -94,6 +85,18 @@ function placePipe(uPipe, lPipe) {
 
   lPipe.x = uPipe.x;
   lPipe.y = uPipe.y + pipeVerticalDistance;
+}
+
+function recyclePipes() {
+  const tempPipes = [];
+  pipes.getChildren().forEach(pipe => {
+    if (pipe.getBounds().right <= 0) {
+      tempPipes.push(pipe);
+      if ( tempPipes.length === 2) {
+        placePipe(...tempPipes);
+      }
+    }
+  })
 }
 
 function getRightMostPipe() {
