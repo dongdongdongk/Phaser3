@@ -27,6 +27,8 @@ class PlayScene extends Phaser.Scene {
     this.createBird();
     this.createPipes();
     this.handleInputs();
+
+    this.createColliders();
   }
 
   update() {
@@ -34,7 +36,7 @@ class PlayScene extends Phaser.Scene {
     this.recyclePipes();
   }
 
-  
+
 
   createBG() {
     this.add.image(0, 0, "sky").setOrigin(0);
@@ -60,6 +62,10 @@ class PlayScene extends Phaser.Scene {
     this.pipes.setVelocityX(-200);
   }
 
+  createColliders() {
+    this.physics.add.collider(this.bird, this.pipes, this.gameOver, null, this);
+  }
+
   handleInputs() {
     this.input.on("pointerdown", this.flap, this);
     this.spaceKey = this.input.keyboard.addKey(
@@ -69,7 +75,7 @@ class PlayScene extends Phaser.Scene {
 
   checkGameStatus() {
     if (this.bird.y > this.config.height || this.bird.y < -this.bird.height) {
-      this.restartBirdPosition();
+      this.gameOver();
     }
 
     if (this.spaceKey.isDown) {
@@ -119,7 +125,7 @@ class PlayScene extends Phaser.Scene {
     return rightMostX;
   }
 
-  restartBirdPosition() {
+  gameOver() {
     this.bird.x = this.config.startPosition.x;
     this.bird.y = this.config.startPosition.y;
     this.bird.body.velocity.y = 0;
