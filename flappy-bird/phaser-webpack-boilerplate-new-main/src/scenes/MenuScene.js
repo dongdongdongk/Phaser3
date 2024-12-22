@@ -1,15 +1,34 @@
-import Phaser from "phaser";
+// import Phaser from "phaser";
+import BaseScene from "./BaseScene";
 
-class MenuScene extends Phaser.Scene {
+class MenuScene extends BaseScene {
 
     constructor(config) {
-        super('MenuScene');
-        this.config = config;
+        super('MenuScene', config);
+        this.menu = [
+            {scene: 'PlayScene', text: 'Play'},
+            {scene: 'ScoreScene', text: 'Score'},
+            {scene: null, text: 'Exit'},
+        ]
     }
 
+
     create() {
-        this.add.image(0, 0, "sky").setOrigin(0);
-        this.scene.start('PlayScene');
+        super.create();
+
+        this.createMenu(this.menu, (menuItem) => this.setupMenuEvents(menuItem));
+    }
+
+    setupMenuEvents(menuItem) {
+        const textGo = menuItem.textGo;
+        textGo.setInteractive();
+        textGo.on('pointerover', () => {
+            textGo.setStyle({fill: '#ff0'});
+        })
+
+        textGo.on('pointerout', () => {
+            textGo.setStyle({fill: '#fff'})
+        })
     }
 }
 
