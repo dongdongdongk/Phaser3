@@ -29,6 +29,16 @@ class MenuScene extends BaseScene {
         textGo.on('pointerout', () => {
             textGo.setStyle({fill: '#fff'})
         })
+
+        textGo.on('pointerup', () => {
+            if (menuItem.scene) {
+                this.scene.start(menuItem.scene);
+            }
+
+            if (menuItem.text === 'Exit') {
+                this.game.destroy(true);
+            }
+        });
     }
 }
 
