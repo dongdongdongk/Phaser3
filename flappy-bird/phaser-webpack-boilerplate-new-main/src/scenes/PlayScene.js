@@ -19,17 +19,17 @@ class PlayScene extends BaseScene {
     this.score = 0;
     this.scoreText = "";
 
-    this.currentDifficulty = "easy";
+    // this.currentDifficulty = "easy";
     this.difficulties = {
-      easy: {
+      "easy": {
         pipeHorizontalDistanceRange: [400, 350],
         pipeVerticalDistanceRange: [250, 300],
       },
-      normal: {
+      "normal": {
         pipeHorizontalDistanceRange: [280, 330],
         pipeVerticalDistanceRange: [140, 190],
       },
-      hard: {
+      "hard": {
         pipeHorizontalDistanceRange: [250, 310],
         pipeVerticalDistanceRange: [120, 150],
       },
@@ -38,6 +38,7 @@ class PlayScene extends BaseScene {
 
   create() {
     // this.createBG();
+    this.currentDifficulty = "easy";
     super.create();
     this.createBird();
     this.createPipes();
@@ -47,7 +48,6 @@ class PlayScene extends BaseScene {
     this.createPause();
     this.listenToEvents();
     this.checkFPS();
-    this.currentDifficulty = "easy";
 
     this.anims.create({
       key: "fly",
@@ -68,22 +68,18 @@ class PlayScene extends BaseScene {
   }
 
   listenToEvents() {
-    this.events.on("resume", () => {
+    if (this.pauseEvent) { return; }
+
+    this.pauseEvent = this.events.on('resume', () => {
       this.initialTime = 3;
-      this.countDownText = this.add
-        .text(
-          ...this.screenCenter,
-          "Fly in: " + this.initialTime,
-          this.fontOptions
-        )
-        .setOrigin(0.5);
+      this.countDownText = this.add.text(...this.screenCenter, 'Fly in: ' + this.initialTime, this.fontOptions).setOrigin(0.5);
       this.timedEvent = this.time.addEvent({
         delay: 1000,
         callback: this.countDown,
         callbackScope: this,
-        loop: true,
-      });
-    });
+        loop: true
+      })
+    })
   }
 
   countDown() {
