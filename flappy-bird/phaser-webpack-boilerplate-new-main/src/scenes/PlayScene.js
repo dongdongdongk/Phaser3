@@ -12,12 +12,28 @@ class PlayScene extends BaseScene {
     this.isPaused = false;
 
     this.pipeHorizontalDistance = 0;
-    this.pipeVerticalDistanceRange = [150, 250];
-    this.pipeHorizontalDistanceRange = [500, 550];
+    // this.pipeVerticalDistanceRange = [150, 250];
+    // this.pipeHorizontalDistanceRange = [500, 550];
     this.flapVelocity = 300;
 
     this.score = 0;
     this.scoreText = '';
+
+    this.currentDifficulty = 'easy';
+    this.difficulties = {
+      'easy': {
+        pipeHorizontalDistanceRange:[400, 350],
+        pipeVerticalDistanceRange: [250, 300],
+      },
+      'normal': {
+        pipeHorizontalDistanceRange:[280, 330],
+        pipeVerticalDistanceRange: [140, 190],
+      },
+      'hard': {
+        pipeHorizontalDistanceRange:[250, 310],
+        pipeVerticalDistanceRange: [120, 150],
+      }
+    }
   }
 
   create() {
@@ -30,6 +46,7 @@ class PlayScene extends BaseScene {
     this.createColliders();
     this.createPause();
     this.listenToEvents();
+    this.currentDifficulty = 'easy'
   }
 
   update() {
@@ -51,7 +68,7 @@ class PlayScene extends BaseScene {
   }
 
   countDown() {
-    this.initialTime --;
+    this.initialTime--;
     this.countDownText.setText('Fly in: ' + this.initialTime)
     if(this.initialTime <= 0) {
       this.isPaused = false;
@@ -137,16 +154,17 @@ class PlayScene extends BaseScene {
   }
 
   placePipe(uPipe, lPipe) {
+    const difficulty = this.difficulties[this.currentDifficulty];
     const rightMostX = this.getRightMostPipe();
     const pipeVerticalDistance = Phaser.Math.Between(
-      ...this.pipeVerticalDistanceRange
+      ...difficulty.pipeVerticalDistanceRange
     );
     const pipeVerticalPosition = Phaser.Math.Between(
       0 + 20,
       this.config.height - 20 - pipeVerticalDistance
     );
     const pipeHorizontalDistance = Phaser.Math.Between(
-      ...this.pipeHorizontalDistanceRange
+      ...difficulty.pipeHorizontalDistanceRange
     );
 
     uPipe.x = rightMostX + pipeHorizontalDistance;
@@ -165,9 +183,26 @@ class PlayScene extends BaseScene {
           this.placePipe(...tempPipes);
           this.increaseScore();
           this.saveBestScore();
+          this.increaseDifficulty();
         }
       }
     });
+  }
+
+  increaseDifficulty() {
+
+    if (this.score === 0) {
+      this.currentDifficulty = 'easy';
+    } 
+
+    if (this.score === 5) {
+      this.currentDifficulty = 'normal';
+    } 
+
+    if (this.score === 10) {
+      this.currentDifficulty = 'hard';
+    }
+
   }
 
   getRightMostPipe() {
