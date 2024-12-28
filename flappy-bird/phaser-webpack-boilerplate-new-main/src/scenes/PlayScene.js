@@ -17,23 +17,23 @@ class PlayScene extends BaseScene {
     this.flapVelocity = 300;
 
     this.score = 0;
-    this.scoreText = '';
+    this.scoreText = "";
 
-    this.currentDifficulty = 'easy';
+    this.currentDifficulty = "easy";
     this.difficulties = {
-      'easy': {
-        pipeHorizontalDistanceRange:[400, 350],
+      easy: {
+        pipeHorizontalDistanceRange: [400, 350],
         pipeVerticalDistanceRange: [250, 300],
       },
-      'normal': {
-        pipeHorizontalDistanceRange:[280, 330],
+      normal: {
+        pipeHorizontalDistanceRange: [280, 330],
         pipeVerticalDistanceRange: [140, 190],
       },
-      'hard': {
-        pipeHorizontalDistanceRange:[250, 310],
+      hard: {
+        pipeHorizontalDistanceRange: [250, 310],
         pipeVerticalDistanceRange: [120, 150],
-      }
-    }
+      },
+    };
   }
 
   create() {
@@ -46,7 +46,20 @@ class PlayScene extends BaseScene {
     this.createColliders();
     this.createPause();
     this.listenToEvents();
-    this.currentDifficulty = 'easy'
+    this.checkFPS();
+    this.currentDifficulty = "easy";
+
+    this.anims.create({
+      key: "fly",
+      frames: this.anims.generateFrameNumbers("bird", { start: 9, end: 16 }),
+      // 24 fps default, it will play animation consisting of 24 frames in 1 second
+      // in case of framerate 2 and sprite of 8 frames animations will play in
+      // 4sec; 8/2 = 4
+      frameRate: 8,
+      // repeat infinitely
+      repeat: -1,
+    });
+    this.bird.play("fly");
   }
 
   update() {
@@ -55,30 +68,50 @@ class PlayScene extends BaseScene {
   }
 
   listenToEvents() {
-    this.events.on('resume', () => {
+    this.events.on("resume", () => {
       this.initialTime = 3;
-      this.countDownText = this.add.text(...this.screenCenter, 'Fly in: ' + this.initialTime, this.fontOptions).setOrigin(0.5);
+      this.countDownText = this.add
+        .text(
+          ...this.screenCenter,
+          "Fly in: " + this.initialTime,
+          this.fontOptions
+        )
+        .setOrigin(0.5);
       this.timedEvent = this.time.addEvent({
         delay: 1000,
         callback: this.countDown,
         callbackScope: this,
-        loop: true
-      })
-    })
+        loop: true,
+      });
+    });
   }
 
   countDown() {
     this.initialTime--;
-    this.countDownText.setText('Fly in: ' + this.initialTime)
-    if(this.initialTime <= 0) {
+    this.countDownText.setText("Fly in: " + this.initialTime);
+    if (this.initialTime <= 0) {
       this.isPaused = false;
-      this.countDownText.setText('');
+      this.countDownText.setText("");
       this.physics.resume();
       this.timedEvent.remove();
     }
   }
 
+  checkFPS() {
+    this.add.text(16, 16, "", { fontSize: "16px", fill: "#FFF" });
+    this.fpsText = this.add.text(16, 16, "FPS: 0", {
+      fontSize: "16px",
+      fill: "#FFF",
+    });
 
+    this.time.addEvent({
+      delay: 100,
+      loop: true,
+      callback: () => {
+        this.fpsText.setText(`FPS: ${Math.floor(this.game.loop.actualFps)}`);
+      },
+    });
+  }
 
   createBG() {
     this.add.image(0, 0, "sky").setOrigin(0);
@@ -87,6 +120,8 @@ class PlayScene extends BaseScene {
   createBird() {
     this.bird = this.physics.add
       .sprite(this.config.startPosition.x, this.config.startPosition.y, "bird")
+      .setFlipX(true)
+      .setScale(3)
       .setOrigin(0);
     this.bird.body.gravity.y = 600;
     this.bird.setCollideWorldBounds(true);
@@ -96,10 +131,12 @@ class PlayScene extends BaseScene {
     this.pipes = this.physics.add.group();
 
     for (let i = 0; i < PIPES_TO_RENDER; i++) {
-      const upperPipe = this.pipes.create(0, 0, "pipe")
+      const upperPipe = this.pipes
+        .create(0, 0, "pipe")
         .setImmovable(true)
         .setOrigin(0, 1);
-      const lowerPipe = this.pipes.create(0, 0, "pipe")
+      const lowerPipe = this.pipes
+        .create(0, 0, "pipe")
         .setImmovable(true)
         .setOrigin(0, 0);
 
@@ -115,24 +152,31 @@ class PlayScene extends BaseScene {
 
   createScore() {
     this.score = 0;
-    const bestScore = localStorage.getItem('bestScore');
-    this.scoreText = this.add.text(16, 16, `Score:${0}`, { fontSize: '32px', fill: '#000'});
-    this.add.text(16, 52, `Best Score: ${ bestScore || 0 }`, { fontSize: '18px', fill: '#000' });
+    const bestScore = localStorage.getItem("bestScore");
+    this.scoreText = this.add.text(16, 16, `Score:${0}`, {
+      fontSize: "32px",
+      fill: "#000",
+    });
+    this.add.text(16, 52, `Best Score: ${bestScore || 0}`, {
+      fontSize: "18px",
+      fill: "#000",
+    });
   }
 
   createPause() {
     this.isPaused = false;
-    const pauseButton = this.add.image(this.config.width - 10, this.config.height - 10, 'pause')
+    const pauseButton = this.add
+      .image(this.config.width - 10, this.config.height - 10, "pause")
       .setInteractive()
       .setScale(3)
-      .setOrigin(1)
+      .setOrigin(1);
 
-      pauseButton.on('pointerdown', () => {
-        this.isPaused = true;
-        this.physics.pause();
-        this.scene.pause();
-        this.scene.launch('PauseScene');
-      })
+    pauseButton.on("pointerdown", () => {
+      this.isPaused = true;
+      this.physics.pause();
+      this.scene.pause();
+      this.scene.launch("PauseScene");
+    });
   }
 
   handleInputs() {
@@ -190,19 +234,17 @@ class PlayScene extends BaseScene {
   }
 
   increaseDifficulty() {
-
     if (this.score === 0) {
-      this.currentDifficulty = 'easy';
-    } 
-
-    if (this.score === 5) {
-      this.currentDifficulty = 'normal';
-    } 
-
-    if (this.score === 10) {
-      this.currentDifficulty = 'hard';
+      this.currentDifficulty = "easy";
     }
 
+    if (this.score === 5) {
+      this.currentDifficulty = "normal";
+    }
+
+    if (this.score === 10) {
+      this.currentDifficulty = "hard";
+    }
   }
 
   getRightMostPipe() {
@@ -216,11 +258,11 @@ class PlayScene extends BaseScene {
   }
 
   saveBestScore() {
-    const bestScoreText = localStorage.getItem('bestScore');
+    const bestScoreText = localStorage.getItem("bestScore");
     const bestScore = bestScoreText && parseInt(bestScoreText, 10);
 
     if (!bestScore || this.score > bestScore) {
-      localStorage.setItem('bestScore', this.score);
+      localStorage.setItem("bestScore", this.score);
     }
   }
 
@@ -229,7 +271,7 @@ class PlayScene extends BaseScene {
     // this.bird.y = this.config.startPosition.y;
     // this.bird.body.velocity.y = 0;
     this.physics.pause();
-    this.bird.setTint(0xEE4824);
+    this.bird.setTint(0xee4824);
 
     this.saveBestScore();
 
@@ -238,12 +280,12 @@ class PlayScene extends BaseScene {
       callback: () => {
         this.scene.restart();
       },
-      loop: false
-    })
+      loop: false,
+    });
   }
 
   flap() {
-    if ( this.isPaused) {
+    if (this.isPaused) {
       return;
     }
     this.bird.body.velocity.y = -this.flapVelocity;

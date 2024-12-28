@@ -18,7 +18,7 @@ class PlayScene extends BaseScene {
     this.score = 0;
     this.scoreText = '';
 
-    this.currentDifficulty = 'easy';
+    //this.currentDifficulty = 'easy';
     this.difficulties = {
       'easy': {
         pipeHorizontalDistanceRange: [300, 350],
