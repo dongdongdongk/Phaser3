@@ -1,20 +1,13 @@
 import Phaser from "phaser";
 import { SpriteWithDynamicBody } from "../types";
 import { Player } from "../entities/Player";
+import { GameScene } from "../GameScene";
 
-class PlayScene extends Phaser.Scene {
+class PlayScene extends GameScene {
 
     player: Player;
     startTrigger: SpriteWithDynamicBody;
     ground: Phaser.GameObjects.TileSprite;
-
-    get gameHeight() {
-        return this.game.config.height as number;
-    }
-
-    get gameWidth() {
-        return this.game.config.width as number;
-    }
 
     constructor() {
         super("PlayScene");
@@ -41,12 +34,15 @@ class PlayScene extends Phaser.Scene {
                 delay: 1000/60,
                 loop: true,
                 callback: () =>{
+                    this.player.playRunAnimation();
                     this.player.setVelocity(80);
                     this.ground.width += (17 * 2);
 
                     if ( this.ground.width >= this.gameWidth) {
                         rollOutEvent.remove();
+                        this.ground.width = this.gameWidth;
                         this.player.setVelocity(0);
+                        this.isGameRunning = true;
                     }
                 }
             })
