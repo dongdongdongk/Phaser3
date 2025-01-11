@@ -10,6 +10,11 @@ class PlayScene extends GameScene {
     startTrigger: SpriteWithDynamicBody;
     ground: Phaser.GameObjects.TileSprite;
     obstacles: Phaser.Physics.Arcade.Group;
+
+    gameOverContainer: Phaser.GameObjects.Container;
+    gameOverText: Phaser.GameObjects.Image;
+    restartText: Phaser.GameObjects.Image;
+
     spawnInterval: number = 1500;
     spawnTime: number = 0;
     gameSpeed: number = 5;
@@ -22,6 +27,14 @@ class PlayScene extends GameScene {
         this.createEnvironment();
         this.createPlayer();
         this.obstacles = this.physics.add.group();
+
+        this.gameOverText = this.add.image(0,0, "game-over");
+        this.restartText = this.add.image(0,80, "restart");
+
+        this.gameOverContainer = this.add
+            .container(this.gameWidth / 2, (this.gameHeight / 2) - 50)
+            .add([this.gameOverText, this.restartText]);
+
         this.startTrigger = this.physics.add.sprite(0, 10, null)
             .setAlpha(0)
             .setOrigin(0, 1)
