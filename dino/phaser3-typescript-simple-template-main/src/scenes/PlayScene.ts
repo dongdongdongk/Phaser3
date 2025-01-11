@@ -26,6 +26,17 @@ class PlayScene extends GameScene {
             .setAlpha(0)
             .setOrigin(0, 1)
 
+        this.physics.add.collider(this.obstacles, this.player, () => {
+            this.physics.pause();
+            this.isGameRunning = false;
+
+            this.player.die();
+
+            // 게임이 종료되고 다시 시작될 때 초기화를 위해 
+            this.spawnTime = 0;
+            this.gameSpeed = 5;
+        });
+
         this.physics.add.overlap(this.startTrigger, this.player, () => {
             
             if( this.startTrigger.y === 10) {
@@ -93,9 +104,10 @@ class PlayScene extends GameScene {
         const obstacleNum = Math.floor(Math.random() * PRELOAD_CONFIG.cactusesCount + 1);
         const distance = Phaser.Math.Between(600, 900);
 
-        this.obstacles
+        const obstacle = this.obstacles
             .create(distance, this.gameHeight, `obstacle-${obstacleNum}`)
-            .setOrigin(0, 1);
+            .setOrigin(0, 1)
+            .setImmovable();
     }
 }
 
