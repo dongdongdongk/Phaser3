@@ -16,8 +16,8 @@ class PlayScene extends GameScene {
     restartText: Phaser.GameObjects.Image;
 
     spawnInterval: number = 1500;
-    spawnTime: number = 0;
-    gameSpeed: number = 5;
+    spawnTime: number = 0; 
+    gameSpeed: number = 10;
 
     constructor() {
         super("PlayScene");
@@ -141,7 +141,13 @@ class PlayScene extends GameScene {
 
     handleGameRestart() {
         this.restartText.on("pointerdown", () => {
-            console.log("Clicking restart!");
+            this.physics.resume();
+            this.player.setVelocityY(0);
+            this.obstacles.clear(true, true);
+            this.gameOverContainer.setAlpha(0);
+            this.anims.resumeAll();
+
+            this.isGameRunning = true;
         });
     }
 }
