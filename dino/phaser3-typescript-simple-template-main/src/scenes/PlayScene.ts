@@ -26,70 +26,26 @@ class PlayScene extends GameScene {
     create() {
         this.createEnvironment();
         this.createPlayer();
-        this.obstacles = this.physics.add.group();
+        this.createObstacles();
+        this.createGameoverContainer();
 
-        this.gameOverText = this.add.image(0,0, "game-over");
-        this.restartText = this.add.image(0,80, "restart");
+        this.handleGameStart();
+        this.handleObstacleCollisions();
+        this.handleGameRestart();
 
-        this.gameOverContainer = this.add
-            .container(this.gameWidth / 2, (this.gameHeight / 2) - 50)
-            .add([this.gameOverText, this.restartText]);
-
-        this.startTrigger = this.physics.add.sprite(0, 10, null)
-            .setAlpha(0)
-            .setOrigin(0, 1)
-
-        this.physics.add.collider(this.obstacles, this.player, () => {
-            this.physics.pause();
-            this.isGameRunning = false;
-
-            this.player.die();
-
-            // 게임이 종료되고 다시 시작될 때 초기화를 위해 
-            this.spawnTime = 0;
-            this.gameSpeed = 5;
-        });
-
-        this.physics.add.overlap(this.startTrigger, this.player, () => {
-            
-            if( this.startTrigger.y === 10) {
-                this.startTrigger.body.reset(0, this.gameHeight);
-                console.log("Triggering upper Trigger");
-                return
-            }
-
-            this.startTrigger.body.reset(9999, 9999);
-
-            const rollOutEvent =this.time.addEvent({
-                delay: 1000/60,
-                loop: true,
-                callback: () =>{
-                    this.player.playRunAnimation();
-                    this.player.setVelocity(80);
-                    this.ground.width += (17 * 2);
-
-                    if ( this.ground.width >= this.gameWidth) {
-                        rollOutEvent.remove();
-                        this.ground.width = this.gameWidth;
-                        this.player.setVelocity(0);
-                        this.isGameRunning = true;
-                    }
-                }
-            })
-
-        })
     }
 
-    
+
     update(time: number, delta: number): void {
 
-        if ( !this.isGameRunning ) {
+
+        if (!this.isGameRunning) {
             return;
         }
 
         this.spawnTime += delta;
-        
-        if ( this.spawnTime > this.spawnInterval) {
+
+        if (this.spawnTime > this.spawnInterval) {
             this.spawnObstacle();
             this.spawnTime = 0;
         }
@@ -97,14 +53,28 @@ class PlayScene extends GameScene {
         Phaser.Actions.IncX(this.obstacles.getChildren(), -this.gameSpeed);
 
         this.obstacles.getChildren().forEach((obstacles: SpriteWithDynamicBody) => {
-            if ( obstacles.getBounds().right < 0 ) {
+            if (obstacles.getBounds().right < 0) {
                 this.obstacles.remove(obstacles);
             }
         });
 
         this.ground.tilePositionX += this.gameSpeed
     }
-    
+
+    createObstacles() {
+        this.obstacles = this.physics.add.group();
+    }
+
+    createGameoverContainer() {
+        this.gameOverText = this.add.image(0, 0, "game-over");
+        this.restartText = this.add.image(0, 80, "restart").setInteractive();
+
+        this.gameOverContainer = this.add
+            .container(this.gameWidth / 2, (this.gameHeight / 2) - 50)
+            .add([this.gameOverText, this.restartText])
+            .setAlpha(0);
+    }
+
     createPlayer() {
         this.player = new Player(this, 0, this.gameHeight);
     }
@@ -121,6 +91,58 @@ class PlayScene extends GameScene {
             .create(distance, this.gameHeight, `obstacle-${obstacleNum}`)
             .setOrigin(0, 1)
             .setImmovable();
+    }
+
+    handleGameStart() {
+        this.startTrigger = this.physics.add.sprite(0, 10, null)
+            .setAlpha(0)
+            .setOrigin(0, 1);
+
+        this.physics.add.overlap(this.startTrigger, this.player, () => {
+
+            if (this.startTrigger.y === 10) {
+                this.startTrigger.body.reset(0, this.gameHeight);
+                return;
+            }
+
+            this.startTrigger.body.reset(9999, 9999);
+
+            const rollOutEvent = this.time.addEvent({
+                delay: 1000 / 60,
+                loop: true,
+                callback: () => {
+                    this.player.playRunAnimation();
+                    this.player.setVelocityX(80);
+                    this.ground.width += (17 * 2);
+
+                    if (this.ground.width >= this.gameWidth) {
+                        rollOutEvent.remove();
+                        this.ground.width = this.gameWidth;
+                        this.player.setVelocityX(0);
+                        this.isGameRunning = true;
+                    }
+                }
+            });
+        });
+    }
+
+    handleObstacleCollisions() {
+        this.physics.add.collider(this.obstacles, this.player, () => {
+            this.isGameRunning = false;
+            this.physics.pause();
+
+            this.player.die();
+            this.gameOverContainer.setAlpha(1);
+
+            this.spawnTime = 0;
+            this.gameSpeed = 5;
+        });
+    }
+
+    handleGameRestart() {
+        this.restartText.on("pointerdown", () => {
+            console.log("Clicking restart!");
+        });
     }
 }
 
