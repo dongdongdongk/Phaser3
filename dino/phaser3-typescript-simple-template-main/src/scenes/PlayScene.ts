@@ -5,7 +5,6 @@ import { GameScene } from "../GameScene";
 import { PRELOAD_CONFIG } from "..";
 
 class PlayScene extends GameScene {
-
     player: Player;
     startTrigger: SpriteWithDynamicBody;
     ground: Phaser.GameObjects.TileSprite;
@@ -16,7 +15,7 @@ class PlayScene extends GameScene {
     restartText: Phaser.GameObjects.Image;
 
     spawnInterval: number = 1500;
-    spawnTime: number = 0; 
+    spawnTime: number = 0;
     gameSpeed: number = 10;
 
     constructor() {
@@ -28,17 +27,14 @@ class PlayScene extends GameScene {
         this.createPlayer();
         this.createObstacles();
         this.createGameoverContainer();
+        this.createAnimations();
 
         this.handleGameStart();
         this.handleObstacleCollisions();
         this.handleGameRestart();
-
     }
 
-
     update(time: number, delta: number): void {
-
-
         if (!this.isGameRunning) {
             return;
         }
@@ -58,7 +54,7 @@ class PlayScene extends GameScene {
             }
         });
 
-        this.ground.tilePositionX += this.gameSpeed
+        this.ground.tilePositionX += this.gameSpeed;
     }
 
     createObstacles() {
@@ -70,9 +66,18 @@ class PlayScene extends GameScene {
         this.restartText = this.add.image(0, 80, "restart").setInteractive();
 
         this.gameOverContainer = this.add
-            .container(this.gameWidth / 2, (this.gameHeight / 2) - 50)
+            .container(this.gameWidth / 2, this.gameHeight / 2 - 50)
             .add([this.gameOverText, this.restartText])
             .setAlpha(0);
+    }
+
+    createAnimations() {
+        this.anims.create({
+            key: "enemy-bird-fly",
+            frames: this.anims.generateFrameNumbers("enemy-bird"),
+            frameRate: 6,
+            repeat: -1,
+        });
     }
 
     createPlayer() {
@@ -80,37 +85,46 @@ class PlayScene extends GameScene {
     }
 
     createEnvironment() {
-        this.ground = this.add.tileSprite(0, this.gameHeight, 88, 26, "ground").setOrigin(0, 1);
+        this.ground = this.add
+            .tileSprite(0, this.gameHeight, 88, 26, "ground")
+            .setOrigin(0, 1);
     }
 
     spawnObstacle() {
-        const obstaclesCount = PRELOAD_CONFIG.cactusesCount + PRELOAD_CONFIG.birdsCount;
+        const obstaclesCount =
+            PRELOAD_CONFIG.cactusesCount + PRELOAD_CONFIG.birdsCount;
         const obstacleNum = Math.floor(Math.random() * obstaclesCount) + 1;
-        const distance = Phaser.Math.Between(600, 900);
+        const distance = Phaser.Math.Between(150, 300);
         let obstacle;
 
         if (obstacleNum > PRELOAD_CONFIG.cactusesCount) {
             const enemyPossibleHeight = [20, 70];
             const enemyHeight = enemyPossibleHeight[Math.floor(Math.random() * 2)];
 
-            obstacle = this.obstacles.create(distance, this.gameHeight - enemyHeight,'enemy-bird')
-
+            obstacle = this.obstacles.create(
+                this.gameWidth + distance,
+                this.gameHeight - enemyHeight,
+                "enemy-bird"
+            );
+            obstacle.play("enemy-bird-fly", true);
         } else {
-            obstacle = this.obstacles.create(distance, this.gameHeight, `obstacle-${obstacleNum}`)
+            obstacle = this.obstacles.create(
+                this.gameWidth + distance,
+                this.gameHeight,
+                `obstacle-${obstacleNum}`
+            );
         }
 
-        obstacle
-            .setOrigin(0, 1)
-            .setImmovable();
+        obstacle.setOrigin(0, 1).setImmovable();
     }
 
     handleGameStart() {
-        this.startTrigger = this.physics.add.sprite(0, 10, null)
+        this.startTrigger = this.physics.add
+            .sprite(0, 10, null)
             .setAlpha(0)
             .setOrigin(0, 1);
 
         this.physics.add.overlap(this.startTrigger, this.player, () => {
-
             if (this.startTrigger.y === 10) {
                 this.startTrigger.body.reset(0, this.gameHeight);
                 return;
@@ -124,7 +138,7 @@ class PlayScene extends GameScene {
                 callback: () => {
                     this.player.playRunAnimation();
                     this.player.setVelocityX(80);
-                    this.ground.width += (17 * 2);
+                    this.ground.width += 17 * 2;
 
                     if (this.ground.width >= this.gameWidth) {
                         rollOutEvent.remove();
@@ -132,7 +146,7 @@ class PlayScene extends GameScene {
                         this.player.setVelocityX(0);
                         this.isGameRunning = true;
                     }
-                }
+                },
             });
         });
     }
@@ -141,6 +155,7 @@ class PlayScene extends GameScene {
         this.physics.add.collider(this.obstacles, this.player, () => {
             this.isGameRunning = false;
             this.physics.pause();
+            this.anims.pauseAll();
 
             this.player.die();
             this.gameOverContainer.setAlpha(1);
