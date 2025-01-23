@@ -9,6 +9,7 @@ class PlayScene extends GameScene {
     startTrigger: SpriteWithDynamicBody;
     ground: Phaser.GameObjects.TileSprite;
     obstacles: Phaser.Physics.Arcade.Group;
+    clouds: Phaser.GameObjects.Group;
 
     gameOverContainer: Phaser.GameObjects.Container;
     gameOverText: Phaser.GameObjects.Image;
@@ -88,6 +89,13 @@ class PlayScene extends GameScene {
         this.ground = this.add
             .tileSprite(0, this.gameHeight, 88, 26, "ground")
             .setOrigin(0, 1);
+
+        this.clouds = this.add.group();
+        this.clouds = this.clouds.addMultiple([
+            this.add.image(this.gameWidth / 2, 170, "cloud"),
+            this.add.image(this.gameWidth -80, 80, "cloud"),
+            this.add.image(this.gameWidth / 1.3, 100, "cloud"),
+        ]);
     }
 
     spawnObstacle() {
