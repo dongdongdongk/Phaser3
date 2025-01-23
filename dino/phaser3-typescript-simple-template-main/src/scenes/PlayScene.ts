@@ -48,10 +48,17 @@ class PlayScene extends GameScene {
         }
 
         Phaser.Actions.IncX(this.obstacles.getChildren(), -this.gameSpeed);
+        Phaser.Actions.IncX(this.clouds.getChildren(), -0.5);
 
         this.obstacles.getChildren().forEach((obstacles: SpriteWithDynamicBody) => {
             if (obstacles.getBounds().right < 0) {
                 this.obstacles.remove(obstacles);
+            }
+        });
+
+        this.clouds.getChildren().forEach((cloud: SpriteWithDynamicBody) => {
+            if (cloud.getBounds().right < 0) {
+                cloud.x = this.gameWidth + 30;
             }
         });
 
@@ -96,6 +103,8 @@ class PlayScene extends GameScene {
             this.add.image(this.gameWidth -80, 80, "cloud"),
             this.add.image(this.gameWidth / 1.3, 100, "cloud"),
         ]);
+
+        this.clouds.setAlpha(0);
     }
 
     spawnObstacle() {
@@ -152,6 +161,7 @@ class PlayScene extends GameScene {
                         rollOutEvent.remove();
                         this.ground.width = this.gameWidth;
                         this.player.setVelocityX(0);
+                        this.clouds.setAlpha(1);
                         this.isGameRunning = true;
                     }
                 },
