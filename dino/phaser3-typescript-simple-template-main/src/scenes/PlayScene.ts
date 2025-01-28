@@ -19,6 +19,8 @@ class PlayScene extends GameScene {
     spawnTime: number = 0;
     gameSpeed: number = 10;
 
+    scoreText: Phaser.GameObjects.Text;
+
     constructor() {
         super("PlayScene");
     }
@@ -29,6 +31,7 @@ class PlayScene extends GameScene {
         this.createObstacles();
         this.createGameoverContainer();
         this.createAnimations();
+        this.createScore();
 
         this.handleGameStart();
         this.handleObstacleCollisions();
@@ -86,6 +89,22 @@ class PlayScene extends GameScene {
             frameRate: 6,
             repeat: -1,
         });
+    }
+
+    createScore() {
+        this.scoreText = this.add.text(
+            this.gameWidth, // x 위치: 화면 오른쪽 끝
+            0,             // y 위치: 화면 위쪽 끝
+            "00000",       // 초기 텍스트 값: "00000"
+            {
+                fontSize: 30,          // 글꼴 크기
+                fontFamily: "Arial",   // 글꼴 종류
+                color: "#535353",      // 글꼴 색상: 회색
+                resolution: 5          // 해상도: 픽셀화된 스타일
+            }
+        )
+        .setOrigin(1, 0)  // 오른쪽 상단을 기준으로 위치 설정
+        .setAlpha(0);     // 처음엔 보이지 않도록 투명도 0 설정
     }
 
     createPlayer() {
@@ -148,7 +167,7 @@ class PlayScene extends GameScene {
             }
 
             this.startTrigger.body.reset(9999, 9999);
-
+            
             const rollOutEvent = this.time.addEvent({
                 delay: 1000 / 60,
                 loop: true,
@@ -163,6 +182,7 @@ class PlayScene extends GameScene {
                         this.player.setVelocityX(0);
                         this.clouds.setAlpha(1);
                         this.isGameRunning = true;
+                        this.scoreText.setAlpha(1);
                     }
                 },
             });
@@ -190,7 +210,6 @@ class PlayScene extends GameScene {
             this.obstacles.clear(true, true);
             this.gameOverContainer.setAlpha(0);
             this.anims.resumeAll();
-
             this.isGameRunning = true;
         });
     }
