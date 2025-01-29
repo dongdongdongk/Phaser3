@@ -15,11 +15,17 @@ class PlayScene extends GameScene {
     gameOverText: Phaser.GameObjects.Image;
     restartText: Phaser.GameObjects.Image;
 
+    score: number = 0;
+    scoreInterval: number = 50;
+    scoreDeltaTime: number = 0;
+
     spawnInterval: number = 1500;
     spawnTime: number = 0;
     gameSpeed: number = 10;
+    gameSpeedModifier: number = 1;
 
     scoreText: Phaser.GameObjects.Text;
+
 
     constructor() {
         super("PlayScene");
@@ -39,6 +45,20 @@ class PlayScene extends GameScene {
     }
 
     update(time: number, delta: number): void {
+
+        this.scoreDeltaTime += delta;
+
+        if (this.scoreDeltaTime >= this.scoreInterval) {
+            this.score++; // 점수 증가
+            this.scoreDeltaTime = 0; // 누적 시간 초기화
+
+            if (this.score % 100 === 0) { // 100점 단위로 속도 증가
+                this.gameSpeedModifier += 0.1; // 점진적으로 증가
+            }
+        }
+
+        console.log(this.score);
+
         if (!this.isGameRunning) {
             return;
         }
@@ -50,8 +70,16 @@ class PlayScene extends GameScene {
             this.spawnTime = 0;
         }
 
-        Phaser.Actions.IncX(this.obstacles.getChildren(), -this.gameSpeed);
+        Phaser.Actions.IncX(this.obstacles.getChildren(), -this.gameSpeed * this.gameSpeedModifier);
         Phaser.Actions.IncX(this.clouds.getChildren(), -0.5);
+
+        const score = Array.from(String(this.score), Number);
+
+        for ( let i = 0; i < 5 - String(this.score).length; i++) {
+            score.unshift(0);
+        }
+
+        this.scoreText.setText(score.join(""));
 
         this.obstacles.getChildren().forEach((obstacles: SpriteWithDynamicBody) => {
             if (obstacles.getBounds().right < 0) {
@@ -65,7 +93,7 @@ class PlayScene extends GameScene {
             }
         });
 
-        this.ground.tilePositionX += this.gameSpeed;
+        this.ground.tilePositionX += (this.gameSpeed * this.gameSpeedModifier);
     }
 
     createObstacles() {
@@ -200,6 +228,10 @@ class PlayScene extends GameScene {
 
             this.spawnTime = 0;
             this.gameSpeed = 10;
+
+            this.score = 0; // 점수 초기화
+            this.scoreDeltaTime = 0; // 누적 시간 초기화
+            this.gameSpeedModifier = 1; // 속도 증가량 초기화
         });
     }
 
