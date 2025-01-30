@@ -24,9 +24,13 @@ class PlayScene extends GameScene {
     gameSpeed: number = 10;
     gameSpeedModifier: number = 1;
 
+    highScoreText: Phaser.GameObjects.Text;
     scoreText: Phaser.GameObjects.Text;
+    startText: Phaser.GameObjects.Text;
+    progressSound: Phaser.Sound.HTML5AudioSound;
+    BgmSound: Phaser.Sound.HTML5AudioSound;
 
-
+    
     constructor() {
         super("PlayScene");
     }
@@ -38,14 +42,22 @@ class PlayScene extends GameScene {
         this.createGameoverContainer();
         this.createAnimations();
         this.createScore();
-
+        this.createStartText();
+        
         this.handleGameStart();
         this.handleObstacleCollisions();
         this.handleGameRestart();
+
+        this.progressSound = this.sound.add("progress", { volume: 0.5 }) as Phaser.Sound.HTML5AudioSound;
+
+        this.BgmSound = this.sound.add("Bgm", { volume: 0.3, loop: true }) as Phaser.Sound.HTML5AudioSound;
     }
-
+    
     update(time: number, delta: number): void {
-
+        
+        if (!this.isGameRunning) {
+            return;
+        }
         this.scoreDeltaTime += delta;
 
         if (this.scoreDeltaTime >= this.scoreInterval) {
@@ -53,15 +65,20 @@ class PlayScene extends GameScene {
             this.scoreDeltaTime = 0; // 누적 시간 초기화
 
             if (this.score % 100 === 0) { // 100점 단위로 속도 증가
-                this.gameSpeedModifier += 0.1; // 점진적으로 증가
+                this.gameSpeedModifier += 0.2; // 점진적으로 증가
+                this.progressSound.play(); // 속도 증가 사운드 재생
+                this.tweens.add({
+                    targets: this.scoreText,
+                    duration: 100,
+                    repeat: 3,
+                    alpha: 0,
+                    yoyo: true
+                });
             }
         }
 
         console.log(this.score);
 
-        if (!this.isGameRunning) {
-            return;
-        }
 
         this.spawnTime += delta;
 
@@ -133,6 +150,37 @@ class PlayScene extends GameScene {
         )
         .setOrigin(1, 0)  // 오른쪽 상단을 기준으로 위치 설정
         .setAlpha(0);     // 처음엔 보이지 않도록 투명도 0 설정
+
+        this.highScoreText = this.add.text(
+            this.scoreText.getBounds().left - 20, // x 위치: 화면 오른쪽 끝
+            0,             // y 위치: 화면 위쪽 끝
+            "00000",       // 초기 텍스트 값: "00000"
+            {
+                fontSize: 25,          // 글꼴 크기
+                fontFamily: "Arial",   // 글꼴 종류
+                color: "#535353",      // 글꼴 색상: 회색
+                resolution: 5          // 해상도: 픽셀화된 스타일
+            }
+        )
+        .setOrigin(1, 0)  // 오른쪽 상단을 기준으로 위치 설정
+        .setAlpha(0);     // 처음엔 보이지 않도록 투명도 0 설정
+    }
+
+    createStartText() {
+        this.startText = this.add.text(
+            this.gameWidth / 2,
+            this.gameHeight / 2,
+            "스페이스 버튼을 눌러 시작하세요.",
+            {
+                fontSize: "30px",
+                fontFamily: "Arial",
+                color: "#535353",
+                padding: { left: 10, right: 10, top: 5, bottom: 5 },
+                resolution: 5
+            }
+        )
+        .setOrigin(0.5)
+        .setDepth(1);
     }
 
     createPlayer() {
@@ -211,6 +259,8 @@ class PlayScene extends GameScene {
                         this.clouds.setAlpha(1);
                         this.isGameRunning = true;
                         this.scoreText.setAlpha(1);
+                        this.startText.setAlpha(0);
+                        this.BgmSound.play();
                     }
                 },
             });
@@ -225,6 +275,12 @@ class PlayScene extends GameScene {
 
             this.player.die();
             this.gameOverContainer.setAlpha(1);
+
+            const newHighScore = this.highScoreText.text.substring(this.highScoreText.text.length -5);
+            const newScore = Number(this.scoreText.text) > Number(newHighScore) ? this.scoreText.text : newHighScore;
+
+            this.highScoreText.setText("High Score: " + newScore);
+            this.highScoreText.setAlpha(1);
 
             this.spawnTime = 0;
             this.gameSpeed = 10;
