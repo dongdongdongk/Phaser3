@@ -2,15 +2,33 @@ import Phaser from "phaser";
 
 class Play extends Phaser.Scene {
     constructor() {
-        super("play");
-    }
-
-    preload() {
-        this.load.image("sky", "assets/sky.png");
+        super("PlayScene");
     }
 
     create() {
-        this.add.image(0, 0, "sky").setOrigin(0);
+        const map = this.createMap();
+        const layers = this.createLayers(map);
+
+        this.createPlayer();
+    }
+
+    createMap() {
+        const map = this.make.tilemap({ key: "map" });
+        map.addTilesetImage("main_lev_build_1", "tiles-1");
+        return map;
+    }
+
+    createLayers(map) {
+        const tileset = map.getTileset("main_lev_build_1");
+        const environment = map.createStaticLayer("environment", tileset);
+        const platforms = map.createDynamicLayer("platforms", tileset);
+        return { environment, platforms };
+    }
+
+    createPlayer() {
+        const player = this.physics.add.sprite(100, 200, "player");
+        player.body.setGravityY(500);
+        player.setCollideWorldBounds(true);
     }
 }
 
