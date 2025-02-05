@@ -22,9 +22,8 @@ const config = {
   pixelArt: true,
   physics: {
     default: 'arcade',
-    debugger: true,
     arcade: {
-      // gravity: { y: 200 }
+      debug: true
     }
   },
     scene: initScenes()
