@@ -33,9 +33,11 @@ class Player extends Phaser.Physics.Arcade.Sprite {
         if(left.isDown) {
             this.setVelocityX(-this.playerSpeed);
             this.play('run', true);
+            this.setFlipX(true);
         } else if (right.isDown) {
             this.setVelocityX(this.playerSpeed);
             this.play('run', true);
+            this.setFlipX(false);
         } else {
             this.setVelocityX(0);
             this.play('idle', true);
