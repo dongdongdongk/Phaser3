@@ -13,9 +13,12 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     }
 
     init() {
-        this.gravity = 500;
+        this.gravity = 800;
         this.playerSpeed = 200;
-        this.jumpSpeed = -350;
+        this.jumpCount = 0;
+        this.consecutiveJumps = 1;
+        
+        this.jumpSpeed = -250;
 
         this.body.setGravityY(500);
         this.setCollideWorldBounds(true);
@@ -31,6 +34,8 @@ class Player extends Phaser.Physics.Arcade.Sprite {
 
     update() {
         const { left, right, space, up } = this.cursors;
+        const isSpaceJustDown = Phaser.Input.Keyboard.JustDown(space);
+        // const isUpJustDown = Phaser.Input.Keyboard.JustDown(up);
         const onFloor = this.body.onFloor();
 
         if(left.isDown) {
@@ -46,9 +51,14 @@ class Player extends Phaser.Physics.Arcade.Sprite {
             this.play('idle', true);
         }
 
-        if ((space.isDown || up.isDown) && onFloor) {
+        if ((isSpaceJustDown) && (onFloor || this.jumpCount < this.consecutiveJumps)) {
             this.setVelocityY(this.jumpSpeed);
+            this.jumpCount++;
             this.play('jump', true);
+        }
+
+        if (onFloor) {
+            this.jumpCount = 0;
         }
         //dont play it again if it is already playing
         // ignoreIfPlaying: true 
