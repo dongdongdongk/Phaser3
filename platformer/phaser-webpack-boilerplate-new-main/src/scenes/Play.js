@@ -16,6 +16,8 @@ class Play extends Phaser.Scene {
                 platformsColliders : layers.platformsColliders
             }
         });
+
+        this.setupFollowupCameraOn(player);
     }
 
     createMap() {
@@ -39,7 +41,11 @@ class Play extends Phaser.Scene {
     }
 
     createPlayerColliders(player, {colliders}) {
-        player.addCollider(colliders.platformsColliders)
+        player.addColliders(colliders.platformsColliders)
+    }
+
+    setupFollowupCameraOn(player) {
+        this.cameras.main.startFollow(player);
     }
 }
 
