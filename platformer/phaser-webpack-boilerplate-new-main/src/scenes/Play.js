@@ -1,5 +1,6 @@
 import Phaser from "phaser";
 import Player from "../entities/Player";
+import Birdman from "../entities/Birdman";
 
 class Play extends Phaser.Scene {
     constructor(config) {
@@ -12,11 +13,19 @@ class Play extends Phaser.Scene {
         const layers = this.createLayers(map);
         const playerZones = this.getPlayerZones(layers.playerZones);
         const player = this.createPlayer(playerZones.start);
+        const enemy = this.createEnemy();
 
         this.createPlayerColliders(player, {
             colliders: {
-                platformsColliders : layers.platformsColliders
-            }
+                platformsColliders: layers.platformsColliders,
+            },
+        });
+
+        this.createEnemyColliders(enemy, {
+            colliders: {
+                platformsColliders: layers.platformsColliders,
+                player,
+            },
         });
 
         this.createEndOfLevel(playerZones.end, player);
@@ -31,11 +40,14 @@ class Play extends Phaser.Scene {
 
     createLayers(map) {
         const tileset = map.getTileset("main_lev_build_1");
-        const platformsColliders = map.createStaticLayer("platforms_colliders", tileset);
+        const platformsColliders = map.createStaticLayer(
+            "platforms_colliders",
+            tileset
+        );
         const environment = map.createStaticLayer("environment", tileset);
         const platforms = map.createStaticLayer("platforms", tileset);
 
-        const playerZones = map.getObjectLayer('player_zones');
+        const playerZones = map.getObjectLayer("player_zones");
 
         platformsColliders.setCollisionByExclusion(-1, true);
         return { environment, platforms, platformsColliders, playerZones };
@@ -45,27 +57,40 @@ class Play extends Phaser.Scene {
         return new Player(this, start.x, start.y);
     }
 
-    createPlayerColliders(player, {colliders}) {
-        player.addColliders(colliders.platformsColliders)
+    createEnemy() {
+        return new Birdman(this, 200, 200);
+    }
+
+    createPlayerColliders(player, { colliders }) {
+        player.addColliders(colliders.platformsColliders);
+    }
+
+    createEnemyColliders(enemy, { colliders }) {
+        enemy
+            .addColliders(colliders.platformsColliders)
+            .addColliders(colliders.player);
     }
 
     setupFollowupCameraOn(player) {
-        const { height, width, mapOffset, zoomFactor } = this.config
+        const { height, width, mapOffset, zoomFactor } = this.config;
         this.physics.world.setBounds(0, 0, width + mapOffset, height + 200);
-        this.cameras.main.setBounds(0, 0, width + mapOffset, height).setZoom(zoomFactor);
+        this.cameras.main
+            .setBounds(0, 0, width + mapOffset, height)
+            .setZoom(zoomFactor);
         this.cameras.main.startFollow(player);
     }
 
     getPlayerZones(playerZonesLayer) {
-        const playerZones = playerZonesLayer.objects
+        const playerZones = playerZonesLayer.objects;
         return {
-            start: playerZones.find(zone => zone.name === 'startZone'),
-            end: playerZones.find(zone => zone.name === 'endZone')
-        }
+            start: playerZones.find((zone) => zone.name === "startZone"),
+            end: playerZones.find((zone) => zone.name === "endZone"),
+        };
     }
 
     createEndOfLevel(end, player) {
-        const endOfLevel = this.physics.add.sprite(end.x, end.y, 'end')
+        const endOfLevel = this.physics.add
+            .sprite(end.x, end.y, "end")
             .setSize(5, this.config.height)
             .setAlpha(0)
             .setOrigin(0.5, 1);
@@ -73,7 +98,6 @@ class Play extends Phaser.Scene {
         const eolOverlap = this.physics.add.overlap(player, endOfLevel, () => {
             eolOverlap.active = false;
             console.log("End of level reached!");
-
         });
     }
 }
