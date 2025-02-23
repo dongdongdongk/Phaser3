@@ -13,7 +13,7 @@ class Play extends Phaser.Scene {
         const layers = this.createLayers(map);
         const playerZones = this.getPlayerZones(layers.playerZones);
         const player = this.createPlayer(playerZones.start);
-        const enemy = this.createEnemy();
+        const enemies = this.createEnemies(layers.enemySpawns);
 
         this.createPlayerColliders(player, {
             colliders: {
@@ -21,7 +21,7 @@ class Play extends Phaser.Scene {
             },
         });
 
-        this.createEnemyColliders(enemy, {
+        this.createEnemyColliders(enemies, {
             colliders: {
                 platformsColliders: layers.platformsColliders,
                 player,
@@ -48,27 +48,33 @@ class Play extends Phaser.Scene {
         const platforms = map.createStaticLayer("platforms", tileset);
 
         const playerZones = map.getObjectLayer("player_zones");
+        const enemySpawns = map.getObjectLayer("enemy_spawns");
 
         platformsColliders.setCollisionByExclusion(-1, true);
-        return { environment, platforms, platformsColliders, playerZones };
+        return { environment, platforms, platformsColliders, playerZones, enemySpawns };
     }
 
     createPlayer(start) {
         return new Player(this, start.x, start.y);
     }
 
-    createEnemy() {
-        return new Birdman(this, 200, 200);
+    createEnemies(spawnLayer) {
+        return spawnLayer.objects.map(spawnPoint => {
+            return new Birdman(this, spawnPoint.x, spawnPoint.y);
+        })
     }
 
     createPlayerColliders(player, { colliders }) {
         player.addColliders(colliders.platformsColliders);
     }
 
-    createEnemyColliders(enemy, { colliders }) {
-        enemy
+    createEnemyColliders(enemies, { colliders }) {
+        enemies.forEach(enemy => {
+            enemy
             .addColliders(colliders.platformsColliders)
             .addColliders(colliders.player);
+        })
+
     }
 
     setupFollowupCameraOn(player) {
