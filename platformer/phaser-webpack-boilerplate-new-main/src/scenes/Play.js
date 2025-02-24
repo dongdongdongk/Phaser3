@@ -1,6 +1,6 @@
 import Phaser from "phaser";
 import Player from "../entities/Player";
-import Birdman from "../entities/Birdman";
+import { getEnemyTypes } from "../types";
 
 class Play extends Phaser.Scene {
     constructor(config) {
@@ -59,9 +59,14 @@ class Play extends Phaser.Scene {
     }
 
     createEnemies(spawnLayer) {
+        const enemyTypes = getEnemyTypes(); // 적 타입을 가져온다
+
         return spawnLayer.objects.map(spawnPoint => {
-            return new Birdman(this, spawnPoint.x, spawnPoint.y);
-        })
+            const EnemyClass = enemyTypes[spawnPoint.type]; // 타입에 맞는 클래스를 가져온다
+            if (!EnemyClass) return null; // 적 타입이 없으면 무시
+
+            return new EnemyClass(this, spawnPoint.x, spawnPoint.y);
+        }).filter(enemy => enemy !== null); // 유효한 적만 리스트에 포함
     }
 
     createPlayerColliders(player, { colliders }) {
