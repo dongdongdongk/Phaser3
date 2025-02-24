@@ -1,6 +1,6 @@
 import Phaser from "phaser";
 import Player from "../entities/Player";
-import { getEnemyTypes } from "../types";
+import Enemies from "../groups/Enemies";
 
 class Play extends Phaser.Scene {
     constructor(config) {
@@ -59,14 +59,14 @@ class Play extends Phaser.Scene {
     }
 
     createEnemies(spawnLayer) {
-        const enemyTypes = getEnemyTypes(); // 적 타입을 가져온다
+        const enemies = new Enemies(this);
+        const enemyTypes = enemies.getTypes();
 
-        return spawnLayer.objects.map(spawnPoint => {
-            const EnemyClass = enemyTypes[spawnPoint.type]; // 타입에 맞는 클래스를 가져온다
-            if (!EnemyClass) return null; // 적 타입이 없으면 무시
-
-            return new EnemyClass(this, spawnPoint.x, spawnPoint.y);
-        }).filter(enemy => enemy !== null); // 유효한 적만 리스트에 포함
+        spawnLayer.objects.forEach(spawnPoint => {
+            const enemy = new enemyTypes[spawnPoint.type](this, spawnPoint.x, spawnPoint.y);
+            enemies.add(enemy);
+        })
+        return enemies;
     }
 
     createPlayerColliders(player, { colliders }) {
@@ -74,12 +74,9 @@ class Play extends Phaser.Scene {
     }
 
     createEnemyColliders(enemies, { colliders }) {
-        enemies.forEach(enemy => {
-            enemy
+        enemies
             .addColliders(colliders.platformsColliders)
             .addColliders(colliders.player);
-        })
-
     }
 
     setupFollowupCameraOn(player) {
