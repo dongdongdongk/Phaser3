@@ -40,8 +40,23 @@ class Play extends Phaser.Scene {
         this.input.on('pointerup',(pointer) => this.finishDrawing(pointer, layers.platforms), this);
     }
 
+    drawDebug(layer) {
+        const collidingTileColor = new Phaser.Display.Color(243, 134, 48, 200);
+        layer.renderDebug(this.graphics, {
+            tileColor: null,
+            collidingTileColor
+        })
+    }
+
     startDrawing(pointer) {
         console.log('시작')
+
+        if ( this.tileHits && this.tileHits.length > 0 ) {
+            this.tileHits.forEach(tile => {
+                tile.index !== -1 &&  tile.setCollision(false)
+            })
+        }
+
         this.line.x1 = pointer.worldX;
         this.line.y1 = pointer.worldY;
         this.platting = true;
@@ -59,9 +74,11 @@ class Play extends Phaser.Scene {
 
         if ( this.tileHits.length > 0 ) {
             this.tileHits.forEach(tile => {
-                tile.index !== -1 && console.log('타일이 있습니다.', tile)
+                tile.index !== -1 && tile.setCollision(true)
             })
         }
+
+        this.drawDebug(layer)
 
         this.platting = false
     }
