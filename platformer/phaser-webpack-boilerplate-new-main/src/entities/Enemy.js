@@ -35,6 +35,7 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
    
     update(time, delta) {
         this.setVelocityX(-30);
+        this.setFlipX(true)
     }
 }
 

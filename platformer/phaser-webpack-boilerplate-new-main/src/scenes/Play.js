@@ -30,6 +30,31 @@ class Play extends Phaser.Scene {
 
         this.createEndOfLevel(playerZones.end, player);
         this.setupFollowupCameraOn(player);
+
+        this.platting = false
+        this.graphics = this.add.graphics();
+        this.line = new Phaser.Geom.Line();
+        this.graphics.lineStyle(1, 0x00ff00);
+
+        this.input.on('pointerdown', this.startDrawing, this);
+        this.input.on('pointerup', this.finishDrawing, this);
+    }
+
+    startDrawing(pointer) {
+        console.log('시작')
+        this.line.x1 = pointer.worldX;
+        this.line.y1 = pointer.worldY;
+        this.platting = true;
+    }
+
+    finishDrawing(pointer) {
+        console.log('끝')
+        this.line.x2 = pointer.worldX;
+        this.line.y2 = pointer.worldY;
+        
+        this.graphics.clear();
+        this.graphics.strokeLineShape(this.line);
+        this.platting = false
     }
 
     createMap() {
@@ -107,6 +132,17 @@ class Play extends Phaser.Scene {
             eolOverlap.active = false;
             console.log("End of level reached!");
         });
+    }
+
+    update() {
+        if( this.platting ) {
+            const pointer = this.input.activePointer;
+    
+            this.line.x2 = pointer.worldX
+            this.line.y2 = pointer.worldY
+            this.graphics.clear()
+            this.graphics.strokeLineShape(this.line)
+        }
     }
 }
 
