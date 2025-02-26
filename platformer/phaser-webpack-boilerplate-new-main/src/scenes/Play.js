@@ -37,7 +37,7 @@ class Play extends Phaser.Scene {
         this.graphics.lineStyle(1, 0x00ff00);
 
         this.input.on('pointerdown', this.startDrawing, this);
-        this.input.on('pointerup', this.finishDrawing, this);
+        this.input.on('pointerup',(pointer) => this.finishDrawing(pointer, layers.platforms), this);
     }
 
     startDrawing(pointer) {
@@ -47,13 +47,22 @@ class Play extends Phaser.Scene {
         this.platting = true;
     }
 
-    finishDrawing(pointer) {
+    finishDrawing(pointer, layer) {
         console.log('끝')
         this.line.x2 = pointer.worldX;
         this.line.y2 = pointer.worldY;
         
         this.graphics.clear();
         this.graphics.strokeLineShape(this.line);
+
+        this.tileHits = layer.getTilesWithinShape(this.line);
+
+        if ( this.tileHits.length > 0 ) {
+            this.tileHits.forEach(tile => {
+                tile.index !== -1 && console.log('타일이 있습니다.', tile)
+            })
+        }
+
         this.platting = false
     }
 
