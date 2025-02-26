@@ -1,16 +1,17 @@
 import Enemy from "./Enemy";
+import initAnims from "./anims/birdmanAnims";
+
 class Birdman extends Enemy{
     constructor(scene, x, y) {
         super(scene, x, y, "birdman");
+        initAnims(scene.anims);
+    }
+
+    update(time, delta) {
+        super.update(time, delta)
+        this.play('birdman-idle', true)
     }
 }
 
 
-class Snaky extends Enemy{
-    constructor(scene, x, y) {
-        super(scene, x, y, "Snaky");
-    }
-}
-
-
-export { Birdman, Snaky };
+export default Birdman ;
