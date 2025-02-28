@@ -19,6 +19,9 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
         this.gravity = 800;
         this.speed = 50;
         this.timeFromLastTrun = 0;
+        this.maxPatrolDistance = 100;
+        this.currentPatrolDistance = 0;
+
         this.body.setGravityY(500);
         this.setCollideWorldBounds(true);
         this.cursors = this.scene.input.keyboard.createCursorKeys();
@@ -43,12 +46,15 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
    
     update(time, delta) {
 
+        this.currentPatrolDistance += Math.abs(this.body.deltaX());
+
         const { ray, hasHit } = this.raycast(this.body, this.platformCollidersLayer, 50, 10);
         console.log("hasHit", hasHit)
-        if (!hasHit && this.timeFromLastTrun + 100 < time) {
+        if ((!hasHit || this.currentPatrolDistance >= this.maxPatrolDistance) && this.timeFromLastTrun + 100 < time) {
             this.setFlipX(!this.flipX);
             this.setVelocityX(this.speed = -this.speed)
             this.timeFromLastTrun = time
+            this.currentPatrolDistance = 0;
             console.log("방향 전환")
         }
 
