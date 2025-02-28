@@ -18,8 +18,8 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
     init() {
         this.gravity = 800;
         this.speed = 50;
-        this.timeFromLastTrun = 0;
-        this.maxPatrolDistance = 100;
+        this.timeFromLastTrun = 250;
+        this.maxPatrolDistance = 600;
         this.currentPatrolDistance = 0;
 
         this.body.setGravityY(500);
@@ -33,7 +33,7 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
         this.platformCollidersLayer = null;
         this.rayGraphics = this.scene.add.graphics({
             lineStyle: {
-                width: 2, 
+                width: 2,
                 color: 0xaa00aa
             }
         })
@@ -43,12 +43,18 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
     initEvents() {
         this.scene.events.on(Phaser.Scenes.Events.UPDATE, this.update, this);
     }
-   
+
     update(time, delta) {
+        this.patrol(time);
+    }
 
+    patrol(time) {
+        if(!this.body || !this.body.onFloor()) {
+            return
+        }
         this.currentPatrolDistance += Math.abs(this.body.deltaX());
-
-        const { ray, hasHit } = this.raycast(this.body, this.platformCollidersLayer, 50, 10);
+        const { ray, hasHit } = this.raycast(this.body, this.platformCollidersLayer, { 
+            raylength : 55, precision : 0, steepnes : 0.7 });
         console.log("hasHit", hasHit)
         if ((!hasHit || this.currentPatrolDistance >= this.maxPatrolDistance) && this.timeFromLastTrun + 100 < time) {
             this.setFlipX(!this.flipX);
@@ -57,11 +63,10 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
             this.currentPatrolDistance = 0;
             console.log("방향 전환")
         }
-
         this.rayGraphics.clear();
         this.rayGraphics.strokeLineShape(ray);
-
     }
+
 
     setPlatformColliders(platformCollidersLayer) {
         this.platformCollidersLayer = platformCollidersLayer

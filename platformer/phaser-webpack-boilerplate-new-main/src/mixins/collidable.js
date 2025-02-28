@@ -10,7 +10,7 @@ export default {
     prevRay: null,
     prevHasHit: null,
 
-    raycast(body, layer, raylength = 30, precision = 0) {
+    raycast(body, layer, { raylength = 30, precision = 0, steepnes = 1 }) {
         const { x, y, width, halfHeight } = body;
         // console.log("현재 감지 중인 레이어:", layer);
 
@@ -30,14 +30,14 @@ export default {
             case Phaser.Physics.Arcade.FACING_RIGHT: {
               line.x1 = x + width;
               line.y1 = y + halfHeight;
-              line.x2 = line.x1 + raylength;
+              line.x2 = line.x1 + raylength * steepnes;
               line.y2 = line.y1 + raylength;
               break;
             }
             case Phaser.Physics.Arcade.FACING_LEFT: {
               line.x1 = x;
               line.y1 = y + halfHeight;
-              line.x2 = line.x1 - raylength;
+              line.x2 = line.x1 - raylength * steepnes;
               line.y2 = line.y1 + raylength;
               break;
             }
