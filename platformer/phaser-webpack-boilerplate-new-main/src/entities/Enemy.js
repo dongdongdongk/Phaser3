@@ -17,6 +17,7 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
 
     init() {
         this.gravity = 800;
+        this.speed = 50;
         this.body.setGravityY(500);
         this.setCollideWorldBounds(true);
         this.cursors = this.scene.input.keyboard.createCursorKeys();
@@ -24,7 +25,7 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
         this.setImmovable(true);
         this.setSize(20, 45)
         this.setOffset(7, 20)
-
+        this.setVelocityX(this.speed)
         this.platformCollidersLayer = null;
         this.rayGraphics = this.scene.add.graphics({
             lineStyle: {
@@ -40,13 +41,13 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
     }
    
     update(time, delta) {
-        this.setVelocityX(30);
-        // this.setFlipX(true)
 
-        const { ray, hasHit } = this.raycast(this.body, this.platformCollidersLayer);
-        
-        if ( hasHit) {
-            console.log("hitting")
+        const { ray, hasHit } = this.raycast(this.body, this.platformCollidersLayer, 50, 10);
+        console.log("hasHit", hasHit)
+        if (!hasHit) {
+            this.setFlipX(!this.flipX);
+            this.setVelocityX(this.speed = -this.speed)
+            console.log("방향 전환")
         }
 
         this.rayGraphics.clear();
@@ -56,24 +57,6 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
 
     setPlatformColliders(platformCollidersLayer) {
         this.platformCollidersLayer = platformCollidersLayer
-    }
-
-    raycast(body, layer, raylength=40) {
-        const { x, y, width, halfHeight } = body;
-        const line = new Phaser.Geom.Line();
-        let hasHit = false;
-
-        line.x1 = x + width;
-        line.y1 = y + halfHeight;
-        line.x2 = line.x1 + raylength;
-        line.y2 = line.y1 + raylength;
-
-        const hits = layer.getTilesWithinShape(line)
-
-        if( hits.length > 0) {
-            hasHit = hits.some(hit => hit.index !== -1)
-        }
-        return { ray: line, hasHit }
     }
 }
 
