@@ -45,8 +45,8 @@ export default {
   
         const hits = layer.getTilesWithinShape(line);
 
-        console.log("감지된 타일:", hits);
-        console.log("타일 인덱스 값:", hits.map(hit => hit.index));
+        // console.log("감지된 타일:", hits);
+        // console.log("타일 인덱스 값:", hits.map(hit => hit.index));
         if (hits.length > 0) {
             hasHit = this.prevHasHit = hits.some(hit => hit.index !== -1);
             this.prevHasHit = null
@@ -55,7 +55,7 @@ export default {
         this.prevRay = line;
         this.bodyPositionDifferenceX = 0;
         
-        console.log("레이케스트")
+        // console.log("레이케스트")
         return { ray: line, hasHit }
 
     }

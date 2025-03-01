@@ -55,13 +55,13 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
         this.currentPatrolDistance += Math.abs(this.body.deltaX());
         const { ray, hasHit } = this.raycast(this.body, this.platformCollidersLayer, { 
             raylength : 55, precision : 0, steepnes : 0.7 });
-        console.log("hasHit", hasHit)
+        // console.log("hasHit", hasHit)
         if ((!hasHit || this.currentPatrolDistance >= this.maxPatrolDistance) && this.timeFromLastTrun + 100 < time) {
             this.setFlipX(!this.flipX);
             this.setVelocityX(this.speed = -this.speed)
             this.timeFromLastTrun = time
             this.currentPatrolDistance = 0;
-            console.log("방향 전환")
+            // console.log("방향 전환")
         }
         this.rayGraphics.clear();
         this.rayGraphics.strokeLineShape(ray);
