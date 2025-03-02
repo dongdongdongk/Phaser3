@@ -8,6 +8,7 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
 
         scene.add.existing(this);
         scene.physics.add.existing(this);
+        this.config = scene.config; // 설정 값 가져오기
 
         Object.assign(this, collidable);
 
@@ -63,8 +64,11 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
             this.currentPatrolDistance = 0;
             // console.log("방향 전환")
         }
-        this.rayGraphics.clear();
-        this.rayGraphics.strokeLineShape(ray);
+        // 디버거 모드일 때만 Raycast 표시
+        if (this.config.debug) {
+            this.rayGraphics.clear();
+            this.rayGraphics.strokeLineShape(ray);
+        }
     }
 
 
