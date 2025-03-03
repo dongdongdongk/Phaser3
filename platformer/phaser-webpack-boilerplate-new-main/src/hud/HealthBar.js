@@ -20,7 +20,10 @@ class HealthBar {
         this.draw(x, y);
     }
 
-
+    decrease(amount) {
+        this.value = amount
+        this.draw(this.x, this.y);
+    }
 
     draw(x, y) {
         this.bar.clear();
@@ -35,10 +38,16 @@ class HealthBar {
         this.bar.fillStyle(0xffffff);
         this.bar.fillRect(x + margin, y + margin, width - margin, height - margin);
 
-        const healthWidth =Math.floor(this.pixelPerHealth * 40);
+        const healthWidth =Math.floor(this.pixelPerHealth * this.value);
 
-        this.bar.fillStyle(0x00FF00);
-        this.bar.fillRect(x + margin, y + margin, healthWidth - margin, height - margin);
+        if( healthWidth <= this.size.width / 3 ) {
+            this.bar.fillStyle(0xFF0000);
+        } else {
+            this.bar.fillStyle(0x00FF00);   
+        }
+        if (healthWidth > 0) {
+            this.bar.fillRect(x + margin, y + margin, healthWidth - margin, height - margin);
+        }
     }
 
 }
