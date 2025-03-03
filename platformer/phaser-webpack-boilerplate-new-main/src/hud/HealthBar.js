@@ -20,18 +20,25 @@ class HealthBar {
         this.draw(x, y);
     }
 
+
+
     draw(x, y) {
         this.bar.clear();
         const { width, height } = this.size;
 
         const margin = 2;
 
-        this.bar.fillStyle(0xefefef);
+        this.bar.fillStyle(0x9B00FF);
         this.bar.fillRect(x, y, width + margin, height + margin);
 
 
-        this.bar.fillStyle(0x56f344);
+        this.bar.fillStyle(0xffffff);
         this.bar.fillRect(x + margin, y + margin, width - margin, height - margin);
+
+        const healthWidth =Math.floor(this.pixelPerHealth * 40);
+
+        this.bar.fillStyle(0x00FF00);
+        this.bar.fillRect(x + margin, y + margin, healthWidth - margin, height - margin);
     }
 
 }
