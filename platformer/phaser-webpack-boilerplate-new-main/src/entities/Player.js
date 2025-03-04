@@ -3,6 +3,7 @@ import initAnimations from "./anims/PlayerAnims";
 
 import collidable from "../mixins/collidable";
 import HealthBar from "../hud/HealthBar";
+import Projectile from "../attacks/Projectile";
 
 class Player extends Phaser.Physics.Arcade.Sprite {
     constructor(scene, x, y) {
@@ -41,6 +42,12 @@ class Player extends Phaser.Physics.Arcade.Sprite {
             this.health
         )
         initAnimations(this.scene.anims);
+
+        this.scene.input.keyboard.on('keydown-Q', () => {
+            console.log('Q key was pressed');
+            const projectile = new Projectile(this.scene, this.x, this.y, 'iceball');
+            projectile.fire();
+        })
     }
 
     initEvents() {
