@@ -2,12 +2,13 @@ import Phaser from 'phaser';
 
 class HealthBar {
 
-    constructor(scene, x, y, health) {
+    constructor(scene, x, y, scale = 1, health) {
         this.bar = new Phaser.GameObjects.Graphics(scene);
-        this.bar.setScrollFactor(0);
 
-        this.x = x;
-        this.y = y;
+        this.x = x / scale;
+        this.y = y / scale;
+
+        this.scale = scale;
         this.value = health;
         this.size = {
             width: 40,
@@ -17,15 +18,19 @@ class HealthBar {
         this.pixelPerHealth = this.size.width / health;
 
         scene.add.existing(this.bar);
-        this.draw(x, y);
+        this.draw(this.x, this.y, this.scale);
     }
 
     decrease(amount) {
-        this.value = amount
-        this.draw(this.x, this.y);
+        if (amount <= 0) {
+            this.value = 0
+        } else {
+            this.value = amount;
+        }
+        this.draw(this.x, this.y, this.scale);
     }
 
-    draw(x, y) {
+    draw(x, y, scale) {
         this.bar.clear();
         const { width, height } = this.size;
 
@@ -48,6 +53,10 @@ class HealthBar {
         if (healthWidth > 0) {
             this.bar.fillRect(x + margin, y + margin, healthWidth - margin, height - margin);
         }
+
+        return this.bar
+            .setScrollFactor(0, 0)
+            .setScale(scale);
     }
 
 }
