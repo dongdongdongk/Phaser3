@@ -28,6 +28,8 @@ class Player extends Phaser.Physics.Arcade.Sprite {
         this.body.setSize(20, 36);
         this.jumpSpeed = -250;
 
+        this.projectiles = new Projectile(this.scene)
+
         this.body.setGravityY(500);
         this.setCollideWorldBounds(true);
         this.cursors = this.scene.input.keyboard.createCursorKeys();
@@ -45,8 +47,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
 
         this.scene.input.keyboard.on('keydown-Q', () => {
             console.log('Q key was pressed');
-            const projectile = new Projectile(this.scene, this.x, this.y, 'iceball');
-            projectile.fire();
+            this.projectiles.fireProjectile()
         })
     }
 
