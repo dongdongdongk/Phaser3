@@ -28,6 +28,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
         this.consecutiveJumps = 1;
         this.body.setSize(20, 36);
         this.jumpSpeed = -250;
+        this.lastDirection = Phaser.Physics.Arcade.FACING_RIGHT;
 
         this.projectiles = new Projectiles(this.scene)
 
@@ -66,9 +67,11 @@ class Player extends Phaser.Physics.Arcade.Sprite {
         const onFloor = this.body.onFloor();
 
         if (left.isDown) {
+            this.lastDirection = Phaser.Physics.Arcade.FACING_LEFT;
             this.setVelocityX(-this.playerSpeed);
             this.setFlipX(true);
         } else if (right.isDown) {
+            this.lastDirection = Phaser.Physics.Arcade.FACING_RIGHT;
             this.setVelocityX(this.playerSpeed);
             this.setFlipX(false);
         } else {
