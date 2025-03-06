@@ -4,6 +4,7 @@ import initAnimations from "./anims/PlayerAnims";
 import collidable from "../mixins/collidable";
 import HealthBar from "../hud/HealthBar";
 import Projectile from "../attacks/Projectile";
+import Projectiles from "../attacks/Projectiles";
 
 class Player extends Phaser.Physics.Arcade.Sprite {
     constructor(scene, x, y) {
@@ -28,7 +29,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
         this.body.setSize(20, 36);
         this.jumpSpeed = -250;
 
-        this.projectiles = new Projectile(this.scene)
+        this.projectiles = new Projectiles(this.scene)
 
         this.body.setGravityY(500);
         this.setCollideWorldBounds(true);
@@ -47,7 +48,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
 
         this.scene.input.keyboard.on('keydown-Q', () => {
             console.log('Q key was pressed');
-            this.projectiles.fireProjectile()
+            this.projectiles.fireProjectile(this)
         })
     }
 
