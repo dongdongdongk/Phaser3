@@ -2,6 +2,7 @@ import Phaser from "phaser";
 import initAnimations from "./anims/PlayerAnims";
 
 import collidable from "../mixins/collidable";
+import anims from "../mixins/anims";
 import HealthBar from "../hud/HealthBar";
 import Projectile from "../attacks/Projectile";
 import Projectiles from "../attacks/Projectiles";
@@ -14,6 +15,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
         scene.physics.add.existing(this);
 
         Object.assign(this, collidable);
+        Object.assign(this, anims);
 
         this.init();
         this.initEvents();
@@ -49,6 +51,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
 
         this.scene.input.keyboard.on('keydown-Q', () => {
             console.log('Q key was pressed');
+            this.play('throw', true);
             this.projectiles.fireProjectile(this)
         })
     }
@@ -88,6 +91,14 @@ class Player extends Phaser.Physics.Arcade.Sprite {
 
         if (onFloor) {
             this.jumpCount = 0;
+        }
+
+        // if( this.anims.isPlaying && this.anims.currentAnim.key === 'throw') {
+        //     return;
+        // }
+
+        if ( this.isPlayingAnims('throw')) {
+            return;
         }
 
         onFloor
