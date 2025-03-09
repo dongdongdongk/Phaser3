@@ -9,10 +9,16 @@ class SpriteEffect extends Phaser.GameObjects.Sprite {
 
         this.target = null;
         this.effectName = effectName;
+
+        this.on('animationcomplete', animation => {
+            if (animation.key === this.effectName) {
+                this.destroy();
+            }
+        }, this);
     }
 
     placeEffect() {
-        if (!this.target) {
+        if (!this.target || !this.body) {
             return;
         }
         const center = this.target.getCenter();
