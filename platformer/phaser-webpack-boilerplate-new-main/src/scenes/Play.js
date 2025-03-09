@@ -2,6 +2,8 @@ import Phaser from "phaser";
 import Player from "../entities/Player";
 import Enemies from "../groups/Enemies";
 
+import initAnims from "../anims";
+
 class Play extends Phaser.Scene {
     constructor(config) {
         super("PlayScene");
@@ -32,37 +34,10 @@ class Play extends Phaser.Scene {
 
         this.createEndOfLevel(playerZones.end, player);
         this.setupFollowupCameraOn(player);
+        initAnims(this.anims);
 
-        // this.platting = false
-        // this.graphics = this.add.graphics();
-        // this.line = new Phaser.Geom.Line();
-        // this.graphics.lineStyle(1, 0x00ff00);
-
-        // this.input.on('pointerdown', this.startDrawing, this);
-        // this.input.on('pointerup',(pointer) => this.finishDrawing(pointer, layers.platforms), this);
     }
 
-    // drawDebug(layer) {
-    //     const collidingTileColor = new Phaser.Display.Color(243, 134, 48, 200);
-    //     layer.renderDebug(this.graphics, {
-    //         tileColor: null,
-    //         collidingTileColor
-    //     })
-    // }
-
-    // startDrawing(pointer) {
-    //     console.log('시작')
-
-    //     if ( this.tileHits && this.tileHits.length > 0 ) {
-    //         this.tileHits.forEach(tile => {
-    //             tile.index !== -1 &&  tile.setCollision(false)
-    //         })
-    //     }
-
-    //     this.line.x1 = pointer.worldX;
-    //     this.line.y1 = pointer.worldY;
-    //     this.platting = true;
-    // }
 
     finishDrawing(pointer, layer) {
         console.log('끝')
@@ -176,17 +151,6 @@ class Play extends Phaser.Scene {
             console.log("End of level reached!");
         });
     }
-
-    // update() {
-    //     if( this.platting ) {
-    //         const pointer = this.input.activePointer;
-    
-    //         this.line.x2 = pointer.worldX
-    //         this.line.y2 = pointer.worldY
-    //         this.graphics.clear()
-    //         this.graphics.strokeLineShape(this.line)
-    //     }
-    // }
 }
 
 export default Play;
