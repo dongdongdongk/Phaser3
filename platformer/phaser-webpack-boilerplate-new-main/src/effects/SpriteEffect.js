@@ -1,7 +1,7 @@
 import Phaser from "phaser";
 
 class SpriteEffect extends Phaser.GameObjects.Sprite {
-    constructor(scene, x, y, effectName) {
+    constructor(scene, x, y, effectName, impactPosition) {
         super(scene, x, y);
 
         scene.add.existing(this);
@@ -9,6 +9,7 @@ class SpriteEffect extends Phaser.GameObjects.Sprite {
 
         this.target = null;
         this.effectName = effectName;
+        this.impactPosition = impactPosition;
 
         this.on('animationcomplete', animation => {
             if (animation.key === this.effectName) {
@@ -27,7 +28,7 @@ class SpriteEffect extends Phaser.GameObjects.Sprite {
             return;
         }
         const center = this.target.getCenter();
-        this.body.reset(center.x, center.y);
+        this.body.reset(center.x, this.impactPosition.y);
     }
 
     playOn(target) {
