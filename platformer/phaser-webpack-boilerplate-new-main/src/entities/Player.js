@@ -7,6 +7,7 @@ import HealthBar from "../hud/HealthBar";
 import Projectile from "../attacks/Projectile";
 import Projectiles from "../attacks/Projectiles";
 import MeleeWeapon from "../attacks/MeleeWeapon";
+import { getTimestamp } from "../utils/function";
 
 class Player extends Phaser.Physics.Arcade.Sprite {
     constructor(scene, x, y) {
@@ -35,6 +36,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
 
         this.projectiles = new Projectiles(this.scene)
         this.meleeWeapon = new MeleeWeapon(this.scene, 0, 0, 'sword-default')
+        this.timeFromLastSwing = null;
 
         this.body.setGravityY(500);
         this.setCollideWorldBounds(true);
@@ -58,9 +60,15 @@ class Player extends Phaser.Physics.Arcade.Sprite {
         })
 
         this.scene.input.keyboard.on('keydown-E', () => {
+
+            if( this.timeFromLastSwing && this.timeFromLastSwing + this.meleeWeapon.attackSpeed > getTimestamp()) {
+                return
+            }
+
             console.log('E key was pressed');
             this.play('throw', true);
             this.meleeWeapon.swing(this)
+            this.timeFromLastSwing = getTimestamp();
         })
     }
 
