@@ -8,7 +8,7 @@ export default anims => {
 
     anims.create({
         key: 'snaky-hurt',
-        frames: anims.generateFrameNumbers('snaky', { start: 25, end: 27 }),
+        frames: anims.generateFrameNumbers('snaky', { start: 22, end: 24 }),
         frameRate: 10,
         repeat: 0,
     })

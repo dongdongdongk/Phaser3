@@ -1,10 +1,15 @@
 import Enemy from "./Enemy";
-import initAnims from "./anims/birdmanAnims";
+import initAnims from "./anims/snakyAnims";
 
 class Snaky extends Enemy{
     constructor(scene, x, y) {
         super(scene, x, y, "snaky");
         initAnims(scene.anims);
+    }
+    init() {
+        super.init();
+        this.speed = 80;
+        this.health = 40;
     }
 
     update(time, delta) {
