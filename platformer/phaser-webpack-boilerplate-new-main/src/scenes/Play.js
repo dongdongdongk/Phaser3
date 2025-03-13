@@ -21,6 +21,7 @@ class Play extends Phaser.Scene {
         this.createPlayerColliders(player, {
             colliders: {
                 platformsColliders: layers.platformsColliders,
+                projectiles: enemies.getProjectiles(),
             },
         });
 
@@ -108,6 +109,7 @@ class Play extends Phaser.Scene {
     createPlayerColliders(player, { colliders }) {
         player
             .addColliders(colliders.platformsColliders)
+            .addColliders(colliders.projectiles, this.onWeaponHit)
     }
 
     onWeaponHit(entity, source) {
