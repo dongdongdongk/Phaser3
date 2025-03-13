@@ -1,5 +1,6 @@
 import Enemy from "./Enemy";
 import initAnims from "./anims/snakyAnims";
+import Pojectiles from "../attacks/Projectiles";
 
 class Snaky extends Enemy{
     constructor(scene, x, y) {
@@ -12,10 +13,20 @@ class Snaky extends Enemy{
         this.health = 40;
         this.setSize(12, 57)
         this.setOffset(7, 7)
+        this.projectiles = new Pojectiles(this.scene, 'fireball-1')
+        this.timeFromLastAttack = 0;
+        this.attackDelay = this.getAttackDelay();
     }
 
     update(time, delta) {
         super.update(time, delta)
+        if(this.timeFromLastAttack + this.attackDelay <= time) {
+            this.projectiles.fireProjectile(this);
+
+            this.timeFromLastAttack = time;
+            this.attackDelay = this.getAttackDelay();
+        }
+
         if(!this.active) {
             return
         }
@@ -28,6 +39,10 @@ class Snaky extends Enemy{
             return
         }
         this.play('snaky-walk', true)
+    }
+
+    getAttackDelay() {
+        return Phaser.Math.Between(3000, 5000)
     }
 
     takesHit(source) {
