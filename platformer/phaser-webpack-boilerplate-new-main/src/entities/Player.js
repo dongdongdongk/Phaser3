@@ -34,7 +34,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
         this.jumpSpeed = -250;
         this.lastDirection = Phaser.Physics.Arcade.FACING_RIGHT;
 
-        this.projectiles = new Projectiles(this.scene)
+        this.projectiles = new Projectiles(this.scene, 'iceball')
         this.meleeWeapon = new MeleeWeapon(this.scene, 0, 0, 'sword-default')
         this.timeFromLastSwing = null;
 
