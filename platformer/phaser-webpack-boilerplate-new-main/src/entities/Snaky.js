@@ -10,6 +10,8 @@ class Snaky extends Enemy{
         super.init();
         this.speed = 80;
         this.health = 40;
+        this.setSize(12, 57)
+        this.setOffset(7, 7)
     }
 
     update(time, delta) {

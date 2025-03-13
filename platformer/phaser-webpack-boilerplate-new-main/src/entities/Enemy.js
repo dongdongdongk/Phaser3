@@ -24,17 +24,13 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
         this.timeFromLastTrun = 250;
         this.maxPatrolDistance = 600;
         this.currentPatrolDistance = 0;
-
         this.health = 40;
         this.damage = 20;
-
         this.body.setGravityY(500);
         this.setCollideWorldBounds(true);
         this.cursors = this.scene.input.keyboard.createCursorKeys();
         this.setOrigin(0.5, 1);
         this.setImmovable(true);
-        this.setSize(20, 45)
-        this.setOffset(7, 20)
         this.setVelocityX(this.speed)
         this.platformCollidersLayer = null;
         this.rayGraphics = this.scene.add.graphics({
