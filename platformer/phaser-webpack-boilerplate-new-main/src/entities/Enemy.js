@@ -95,6 +95,7 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
             this.setVelocity(0, -200)
             this.body.checkCollision.none = true;
             this.setCollideWorldBounds(false);
+            this.scene.events.off(Phaser.Scenes.Events.UPDATE, this.update, this);
         }
     }
 }
