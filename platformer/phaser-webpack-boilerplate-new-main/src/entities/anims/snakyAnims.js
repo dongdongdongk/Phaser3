@@ -20,17 +20,4 @@ export default anims => {
         frameRate: 10,
         repeat: 0,
     })
-
-    anims.create({
-        key: 'fireball',
-        frames: [
-            { key: 'fireball-1' },
-            { key: 'fireball-2' },
-            { key: 'fireball-3' },
-        ],
-        frameRate: 10,
-        repeat: 0,
-    })
-
-    
 }

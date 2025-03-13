@@ -9,6 +9,8 @@ class Enemies extends Phaser.GameObjects.Group {
         Object.assign(this, collidable);
     }
 
+
+
     getTypes() {
         return ENEMY_TYPES();
     }
