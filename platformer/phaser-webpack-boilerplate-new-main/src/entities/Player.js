@@ -146,7 +146,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
         setTimeout(() => this.setVelocityY(-this.bounceVelocity), 0);
     }
 
-    takesHit(initiator) {
+    takesHit(source) {
         if (this.hasBeenHit) {
             return;
         }
@@ -155,8 +155,10 @@ class Player extends Phaser.Physics.Arcade.Sprite {
         this.bounceOff();
         const hitAim = this.playDamageTween();
         
-        this.health -= initiator.damage;
+        this.health -= source.damage;
         this.hp.decrease(this.health)
+        debugger
+        source.deliversHit && source.deliversHit(this);
 
         // 일정 시간(1초) 후 다시 피격 가능하도록 설정
         this.scene.time.delayedCall(800, () => {
