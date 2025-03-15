@@ -17,6 +17,7 @@ class Play extends Phaser.Scene {
         const player = this.createPlayer(playerZones.start);
         
         const enemies = this.createEnemies(layers.enemySpawns, layers.platformsColliders);
+        const collectables = this.createCollectables(layers.collectables);
         
         this.createPlayerColliders(player, {
             colliders: {
@@ -78,9 +79,20 @@ class Play extends Phaser.Scene {
 
         const playerZones = map.getObjectLayer("player_zones");
         const enemySpawns = map.getObjectLayer("enemy_spawns");
+        const collectables = map.getObjectLayer("collectables");
 
         platformsColliders.setCollisionByExclusion(-1, true);
-        return { environment, platforms, platformsColliders, playerZones, enemySpawns };
+        return { environment, platforms, platformsColliders, playerZones, enemySpawns, collectables };
+    }
+
+    createCollectables(collectableLayer) {
+        const collectables = this.physics.add.staticGroup();
+
+        collectableLayer.objects.forEach(collectable => {
+            collectables.get(collectable.x, collectable.y, 'diamond').setDepth(-1);
+        })
+
+        return collectables;
     }
 
     createPlayer(start) {

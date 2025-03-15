@@ -16,6 +16,7 @@ class Preload extends Phaser.Scene {
         this.load.image("fireball-1", "./assets/weapons/improved_fireball_001.png");
         this.load.image("fireball-2", "./assets/weapons/improved_fireball_002.png");
         this.load.image("fireball-3", "./assets/weapons/improved_fireball_003.png");
+        this.load.image("diamond", "./assets/collectables/diamond.png");
 
         this.load.spritesheet('player', 'assets/player/move_sprite_1.png', { frameWidth: 32, frameHeight: 38, spacing: 32});
 
