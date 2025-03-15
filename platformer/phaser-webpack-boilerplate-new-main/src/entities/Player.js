@@ -32,10 +32,11 @@ class Player extends Phaser.Physics.Arcade.Sprite {
         this.consecutiveJumps = 1;
         this.body.setSize(20, 36);
         this.jumpSpeed = -250;
+        this.isSliding = false;
         this.lastDirection = Phaser.Physics.Arcade.FACING_RIGHT;
 
-        this.projectiles = new Projectiles(this.scene, 'iceball-1')
-        this.meleeWeapon = new MeleeWeapon(this.scene, 0, 0, 'sword-default')
+        this.projectiles = new Projectiles(this.scene, "iceball-1");
+        this.meleeWeapon = new MeleeWeapon(this.scene, 0, 0, "sword-default");
         this.timeFromLastSwing = null;
 
         this.body.setGravityY(500);
@@ -46,30 +47,15 @@ class Player extends Phaser.Physics.Arcade.Sprite {
 
         this.hp = new HealthBar(
             this.scene,
-            this.scene.config.leftTopCorner.x + 5, 
+            this.scene.config.leftTopCorner.x + 5,
             this.scene.config.leftTopCorner.y + 5,
             2,
             this.health
-        )
+        );
         initAnimations(this.scene.anims);
 
-        this.scene.input.keyboard.on('keydown-Q', () => {
-            console.log('Q key was pressed');
-            this.play('throw', true);
-            this.projectiles.fireProjectile(this, 'iceball');
-        })
-
-        this.scene.input.keyboard.on('keydown-E', () => {
-
-            if( this.timeFromLastSwing && this.timeFromLastSwing + this.meleeWeapon.attackSpeed > getTimestamp()) {
-                return
-            }
-
-            console.log('E key was pressed');
-            this.play('throw', true);
-            this.meleeWeapon.swing(this)
-            this.timeFromLastSwing = getTimestamp();
-        })
+        this.handleAttacks();
+        this.handleMovement();
     }
 
     initEvents() {
@@ -77,10 +63,10 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     }
 
     update() {
-        if (this.hasBeenHit) {
+        if (this.hasBeenHit || this.isSliding) {
             return;
         }
-        const { left, right, space, up } = this.cursors;
+        const { left, right, space } = this.cursors;
         const isSpaceJustDown = Phaser.Input.Keyboard.JustDown(space);
         // const isUpJustDown = Phaser.Input.Keyboard.JustDown(up);
         const onFloor = this.body.onFloor();
@@ -109,11 +95,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
             this.jumpCount = 0;
         }
 
-        // if( this.anims.isPlaying && this.anims.currentAnim.key === 'throw') {
-        //     return;
-        // }
-
-        if ( this.isPlayingAnims('throw')) {
+        if (this.isPlayingAnims("throw") || this.isPlayingAnims("slide")) {
             return;
         }
 
@@ -122,10 +104,47 @@ class Player extends Phaser.Physics.Arcade.Sprite {
                 ? this.play("run", true)
                 : this.play("idle", true)
             : this.play("jump", true);
+    }
 
-        //dont play it again if it is already playing
-        // ignoreIfPlaying: true
-        // this.play('idle', true, { ignoreIfPlaying: true });
+    handleMovement() {
+        this.scene.input.keyboard.on("keydown-DOWN", () => {
+            // if(!this.body.onFloor()) {
+            //     return;
+            // }
+            this.body.setSize(this.width, this.height / 2);
+            this.setOffset(0, this.height / 2);
+            this.setVelocityX(0);
+            this.play("slide", true);
+            this.isSliding = true;
+        });
+
+        this.scene.input.keyboard.on("keyup-DOWN", () => {
+            this.body.setSize(this.width, 38);
+            this.setOffset(0, 0);
+            this.isSliding = false;
+        });
+    }
+
+    handleAttacks() {
+        this.scene.input.keyboard.on("keydown-Q", () => {
+            console.log("Q key was pressed");
+            this.play("throw", true);
+            this.projectiles.fireProjectile(this, "iceball");
+        });
+
+        this.scene.input.keyboard.on("keydown-E", () => {
+            if (
+                this.timeFromLastSwing &&
+                this.timeFromLastSwing + this.meleeWeapon.attackSpeed > getTimestamp()
+            ) {
+                return;
+            }
+
+            console.log("E key was pressed");
+            this.play("throw", true);
+            this.meleeWeapon.swing(this);
+            this.timeFromLastSwing = getTimestamp();
+        });
     }
 
     playDamageTween() {
@@ -154,10 +173,10 @@ class Player extends Phaser.Physics.Arcade.Sprite {
         this.hasBeenHit = true;
         this.bounceOff();
         const hitAim = this.playDamageTween();
-        
+
         this.health -= source.damage;
-        this.hp.decrease(this.health)
-        debugger
+        this.hp.decrease(this.health);
+        debugger;
         source.deliversHit && source.deliversHit(this);
 
         // 일정 시간(1초) 후 다시 피격 가능하도록 설정
