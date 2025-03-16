@@ -23,6 +23,7 @@ class Play extends Phaser.Scene {
             colliders: {
                 platformsColliders: layers.platformsColliders,
                 projectiles: enemies.getProjectiles(),
+                collectables,
             },
         });
 
@@ -122,11 +123,18 @@ class Play extends Phaser.Scene {
         player
             .addColliders(colliders.platformsColliders)
             .addColliders(colliders.projectiles, this.onWeaponHit)
+            .addOverlap(colliders.collectables, this.onCollect)
     }
 
     onWeaponHit(entity, source) {
         //console.log(`${entity} is taking a hit from ${source}`);
         entity.takesHit(source);
+    }
+
+    onCollect(entity, collectable) {
+        console.log('collecting')
+        collectable.disableBody(true, true);
+        collectable.destroy();
     }
 
     createEnemyColliders(enemies, { colliders }) {
