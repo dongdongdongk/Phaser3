@@ -12,6 +12,7 @@ class Play extends Phaser.Scene {
 
     create() {
         const map = this.createMap();
+        initAnims(this.anims);
         const layers = this.createLayers(map);
         const playerZones = this.getPlayerZones(layers.playerZones);
         const player = this.createPlayer(playerZones.start);
@@ -37,7 +38,6 @@ class Play extends Phaser.Scene {
 
         this.createEndOfLevel(playerZones.end, player);
         this.setupFollowupCameraOn(player);
-        initAnims(this.anims);
 
     }
 
@@ -92,6 +92,8 @@ class Play extends Phaser.Scene {
         collectableLayer.objects.forEach(collectable => {
             collectables.get(collectable.x, collectable.y, 'diamond').setDepth(-1);
         })
+
+        collectables.playAnimation('diamond-shine');
 
         return collectables;
     }
