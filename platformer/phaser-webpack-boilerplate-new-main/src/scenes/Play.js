@@ -90,10 +90,7 @@ class Play extends Phaser.Scene {
     createCollectables(collectableLayer) {
         const collectables = new Collectables(this).setDepth(-1);;
 
-        collectableLayer.objects.forEach(collectable => {
-            collectables.get(collectable.x, collectable.y, 'diamond')
-        })
-
+        collectables.addFromLayer(collectableLayer);
         collectables.playAnimation('diamond-shine');
 
         return collectables;

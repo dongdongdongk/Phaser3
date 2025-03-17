@@ -9,6 +9,25 @@ class Collectables extends Phaser.Physics.Arcade.StaticGroup {
             classType: Collectable
         })
     }
+
+    mapProperties(propertiesList) {
+        if(!propertiesList || propertiesList.length === 0) {
+            return
+        }
+
+        return propertiesList.reduce((map, obj) => {
+            map[obj.name] = obj.value
+            return map
+        }, {})
+    }
+
+    addFromLayer(layer) {
+        const properties = this.mapProperties(layer.properties)
+
+        layer.objects.forEach(collectable => {
+            this.get(collectable.x, collectable.y, properties.type)
+        })
+    }
 }
 
 export default Collectables;
