@@ -358,6 +358,11 @@
                          "name":"score",
                          "type":"int",
                          "value":1
+                        }, 
+                        {
+                         "name":"type",
+                         "type":"string",
+                         "value":"diamond"
                         }],
                  "rotation":0,
                  "type":"",
@@ -709,13 +714,24 @@
                  "y":311.666666666667
                 }],
          "opacity":1,
+         "properties":[
+                {
+                 "name":"score",
+                 "type":"int",
+                 "value":1
+                }, 
+                {
+                 "name":"type",
+                 "type":"string",
+                 "value":"diamond"
+                }],
          "type":"objectgroup",
          "visible":true,
          "x":0,
          "y":0
         }],
  "nextlayerid":10,
- "nextobjectid":64,
+ "nextobjectid":65,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.4.2",
