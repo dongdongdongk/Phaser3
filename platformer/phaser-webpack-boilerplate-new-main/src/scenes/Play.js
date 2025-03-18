@@ -11,6 +11,7 @@ class Play extends Phaser.Scene {
     }
 
     create() {
+        this.score = 0;
         const map = this.createMap();
         initAnims(this.anims);
         const layers = this.createLayers(map);
@@ -121,7 +122,7 @@ class Play extends Phaser.Scene {
         player
             .addColliders(colliders.platformsColliders)
             .addColliders(colliders.projectiles, this.onWeaponHit)
-            .addOverlap(colliders.collectables, this.onCollect)
+            .addOverlap(colliders.collectables, this.onCollect, this)
     }
 
     onWeaponHit(entity, source) {
@@ -130,7 +131,8 @@ class Play extends Phaser.Scene {
     }
 
     onCollect(entity, collectable) {
-        console.log('collecting')
+        this.score += collectable.score;
+        console.log(this.score);
         collectable.disableBody(true, true);
         collectable.destroy();
     }
