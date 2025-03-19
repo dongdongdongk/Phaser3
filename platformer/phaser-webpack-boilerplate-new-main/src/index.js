@@ -24,6 +24,10 @@ const SHARED_CONFIG = {
   leftTopCorner: {
     x: (width - (width / zoomFactor)) / 2,
     y: (height - (height / zoomFactor)) / 2
+  },
+  rightTopCorner: {
+    x: ((width / zoomFactor) + ((width - (width / zoomFactor)) / 2)),
+    y: (height - (height / zoomFactor)) / 2
   }
 }
 

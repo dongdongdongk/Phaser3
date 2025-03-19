@@ -3,6 +3,7 @@ import Player from "../entities/Player";
 import Enemies from "../groups/Enemies";
 import Collectables from "../groups/Collectables";
 import initAnims from "../anims";
+import Hud from "../hud"
 
 class Play extends Phaser.Scene {
     constructor(config) {
@@ -39,6 +40,8 @@ class Play extends Phaser.Scene {
 
         this.createEndOfLevel(playerZones.end, player);
         this.setupFollowupCameraOn(player);
+
+        new Hud(this, 0, 0)
 
     }
 
