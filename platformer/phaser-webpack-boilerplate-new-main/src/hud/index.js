@@ -35,7 +35,14 @@ class Hud extends Phaser.GameObjects.Container {
         const scoreImage = this.scene.add.image(scoreText.width + 5, 0, 'diamond').setOrigin(0).setScale(1.3);
         
         const scoreBoard = this.scene.add.container(0, 0, [scoreText, scoreImage]);
+        scoreBoard.setName('scoreBoard');
         return scoreBoard;
+    }
+
+    updateScoreboard(score) {
+        const [scoreText, scoreImage] = this.getByName('scoreBoard').list;
+        scoreText.setText(score);
+        scoreImage.setX(scoreText.width + 3)
     }
 
 }

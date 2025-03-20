@@ -13,6 +13,8 @@ class Play extends Phaser.Scene {
 
     create() {
         this.score = 0;
+        this.hud = new Hud(this, 0, 0).setDepth(1)
+
         const map = this.createMap();
         initAnims(this.anims);
         const layers = this.createLayers(map);
@@ -40,8 +42,6 @@ class Play extends Phaser.Scene {
 
         this.createEndOfLevel(playerZones.end, player);
         this.setupFollowupCameraOn(player);
-
-        new Hud(this, 0, 0)
 
     }
 
@@ -135,7 +135,7 @@ class Play extends Phaser.Scene {
 
     onCollect(entity, collectable) {
         this.score += collectable.score;
-        console.log(this.score);
+        this.hud.updateScoreboard(this.score)
         collectable.disableBody(true, true);
         collectable.destroy();
     }
