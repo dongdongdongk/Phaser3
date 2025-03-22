@@ -174,7 +174,8 @@ class Player extends Phaser.Physics.Arcade.Sprite {
         this.bounceOff();
         const hitAim = this.playDamageTween();
 
-        this.health -= source.damage;
+        debugger;
+        this.health -= source.damage || source.properties.damage || 0;
         this.hp.decrease(this.health);
         debugger;
         source.deliversHit && source.deliversHit(this);

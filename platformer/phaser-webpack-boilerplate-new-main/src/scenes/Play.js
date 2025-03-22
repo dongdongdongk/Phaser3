@@ -128,12 +128,12 @@ class Play extends Phaser.Scene {
     createPlayerColliders(player, { colliders }) {
         player
             .addColliders(colliders.platformsColliders)
-            .addColliders(colliders.projectiles, this.onWeaponHit)
+            .addColliders(colliders.projectiles, this.onHit)
             .addOverlap(colliders.collectables, this.onCollect, this)
-            .addColliders(colliders.traps, () => { console.log('trap hit') })
+            .addColliders(colliders.traps, this.onHit)
     }
 
-    onWeaponHit(entity, source) {
+    onHit(entity, source) {
         //console.log(`${entity} is taking a hit from ${source}`);
         entity.takesHit(source);
     }
@@ -149,8 +149,8 @@ class Play extends Phaser.Scene {
         enemies
             .addColliders(colliders.platformsColliders)
             .addColliders(colliders.player, this.onPlayerCollision)
-            .addColliders(colliders.player.projectiles, this.onWeaponHit)
-            .addOverlap(colliders.player.meleeWeapon, this.onWeaponHit)
+            .addColliders(colliders.player.projectiles, this.onHit)
+            .addOverlap(colliders.player.meleeWeapon, this.onHit)
     }
 
     setupFollowupCameraOn(player) {
