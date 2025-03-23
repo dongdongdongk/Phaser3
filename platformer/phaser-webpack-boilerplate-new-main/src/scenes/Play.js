@@ -34,6 +34,7 @@ class Play extends Phaser.Scene {
             },
         });
 
+        this.createBG(map);
         
         this.createEnemyColliders(enemies, {
             colliders: {
@@ -105,6 +106,14 @@ class Play extends Phaser.Scene {
 
         platformsColliders.setCollisionByExclusion(-1, true);
         return { environment, platforms, platformsColliders, playerZones, enemySpawns, collectables, traps };
+    }
+
+    createBG(map) {
+        const bgObject = map.getObjectLayer("distance_bg").objects[0];
+        this.add.tileSprite(bgObject.x, bgObject.y, this.config.width, bgObject.height, "bg-spikes-dark")
+        .setOrigin(0, 1)
+        .setDepth(-10)
+        .setScrollFactor(0, 1);
     }
 
     createCollectables(collectableLayer) {
