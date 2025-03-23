@@ -85,11 +85,21 @@ class Play extends Phaser.Scene {
     createMap() {
         const map = this.make.tilemap({ key: "map" });
         map.addTilesetImage("main_lev_build_1", "tiles-1");
+
+            // 디버깅용 로그 추가
+        console.log("All tilesets:", map.tilesets);
+        console.log("Finding tileset:", map.getTileset("bg_spikes_tileset"));
+        map.addTilesetImage("bg_spikes_tileset", "bg_spikes_tileset");
         return map;
     }
 
     createLayers(map) {
         const tileset = map.getTileset("main_lev_build_1");
+        debugger
+        const tilesetBg = map.getTileset("bg_spikes_tileset");
+
+        map.createStaticLayer("distance", tilesetBg).setDepth(-12);
+
         const platformsColliders = map.createStaticLayer(
             "platforms_colliders",
             tileset
@@ -113,6 +123,12 @@ class Play extends Phaser.Scene {
         this.add.tileSprite(bgObject.x, bgObject.y, this.config.width, bgObject.height, "bg-spikes-dark")
         .setOrigin(0, 1)
         .setDepth(-10)
+        .setScrollFactor(0, 1);
+
+        this.add.tileSprite(0, 0, this.config.width, 180, "sky-play")
+        .setOrigin(0, 0)
+        .setDepth(-11)
+        .setScale(1.1)
         .setScrollFactor(0, 1);
     }
 
