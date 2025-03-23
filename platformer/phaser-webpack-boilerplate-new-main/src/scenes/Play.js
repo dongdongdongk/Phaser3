@@ -12,7 +12,7 @@ class Play extends Phaser.Scene {
         this.config = config;
     }
 
-    create() {
+    create(gameStatus) {
         this.score = 0;
         this.hud = new Hud(this, 0, 0).setDepth(1)
 
@@ -42,15 +42,20 @@ class Play extends Phaser.Scene {
             },
         });
 
-        this.createGameEvents();
         this.createEndOfLevel(playerZones.end, player);
         this.setupFollowupCameraOn(player);
+        
+        if(gameStatus === 'PLAYER_LOOSE') {
+            return;    
+        }
+        this.createGameEvents();
 
     }
 
     createGameEvents() {
         EventEmitter.on("PLAYER_LOOSE", () => {
-            alert("You lost! Click OK to restart the game.");
+            console.log('player loose')
+            this.scene.restart({gameStatus: 'PLAYER_LOOSE'});
         })
     }
 
