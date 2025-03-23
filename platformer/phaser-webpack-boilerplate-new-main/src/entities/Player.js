@@ -7,6 +7,7 @@ import HealthBar from "../hud/HealthBar";
 import Projectile from "../attacks/Projectile";
 import Projectiles from "../attacks/Projectiles";
 import MeleeWeapon from "../attacks/MeleeWeapon";
+import EventEmitter from "../events/Emitter";
 import { getTimestamp } from "../utils/function";
 
 class Player extends Phaser.Physics.Arcade.Sprite {
@@ -177,14 +178,20 @@ class Player extends Phaser.Physics.Arcade.Sprite {
         if (this.hasBeenHit) {
             return;
         }
+
+        this.health -= source.damage || source.properties.damage || 0;
+        if(this.health <= 0) {
+            EventEmitter.emit("PLAYER_LOOSE");
+            return;
+        }
+        
         console.log("player got hit");
         this.hasBeenHit = true;
         this.bounceOff(source);
         const hitAim = this.playDamageTween();
 
-        this.health -= source.damage || source.properties.damage || 0;
         this.hp.decrease(this.health);
-        debugger;
+
         source.deliversHit && source.deliversHit(this);
 
         // 일정 시간(1초) 후 다시 피격 가능하도록 설정

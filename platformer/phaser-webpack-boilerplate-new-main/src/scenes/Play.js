@@ -4,6 +4,7 @@ import Enemies from "../groups/Enemies";
 import Collectables from "../groups/Collectables";
 import initAnims from "../anims";
 import Hud from "../hud"
+import EventEmitter from "../events/Emitter";
 
 class Play extends Phaser.Scene {
     constructor(config) {
@@ -41,9 +42,16 @@ class Play extends Phaser.Scene {
             },
         });
 
+        this.createGameEvents();
         this.createEndOfLevel(playerZones.end, player);
         this.setupFollowupCameraOn(player);
 
+    }
+
+    createGameEvents() {
+        EventEmitter.on("PLAYER_LOOSE", () => {
+            alert("You lost! Click OK to restart the game.");
+        })
     }
 
 
