@@ -3,6 +3,7 @@ import Phaser from "phaser";
 
 import PlayScene from "./scenes/Play";
 import PreloadScene from "./scenes/Preload";
+import MenuScene from "./scenes/Menu";
 
 // 1. 맵 크기 설정
 const mapWidth = 1600;
@@ -31,7 +32,7 @@ const SHARED_CONFIG = {
   }
 }
 
-const Scenes = [PreloadScene, PlayScene];
+const Scenes = [PreloadScene,MenuScene, PlayScene];
 const createScene = Scene => new Scene(SHARED_CONFIG);
 const initScenes = () => Scenes.map(createScene);
 

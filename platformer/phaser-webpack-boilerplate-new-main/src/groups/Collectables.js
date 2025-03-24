@@ -23,7 +23,6 @@ class Collectables extends Phaser.Physics.Arcade.StaticGroup {
 
         })
         const a = this.getChildren().map(diamond => diamond.score)
-        debugger
     }
 
     mapProperties(propertiesList) {

@@ -14,6 +14,8 @@ class Preload extends Phaser.Scene {
         this.load.image("sky-play", "./assets/sky_play.png");
         this.load.image("bg_spikes_tileset", "./assets/bg_spikes_tileset.png");
 
+        this.load.image("meun-bg", "./assets/background01.png");
+
         this.load.image("iceball-1", "./assets/weapons/iceball_001.png");
         this.load.image("iceball-2", "./assets/weapons/iceball_002.png");
         // this.load.image('player', 'assets/player/movements/idle01.png');
@@ -50,8 +52,9 @@ class Preload extends Phaser.Scene {
     }
 
     startGame() {
+        console.log("startGame")
         this.registry.set('level', 1)
-        this.scene.start('PlayScene')
+        this.scene.start('MenuScene')
     }
 
     // create() {

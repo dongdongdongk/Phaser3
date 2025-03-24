@@ -54,7 +54,7 @@ class Play extends Phaser.Scene {
     }
 
     createGameEvents() {
-        EventEmitter.on("PLAYER_LOOSE", () => {
+        EventEmitter.once("PLAYER_LOOSE", () => {
             console.log('player loose')
             this.scene.restart({gameStatus: 'PLAYER_LOOSE'});
         })
@@ -95,7 +95,7 @@ class Play extends Phaser.Scene {
 
     createLayers(map) {
         const tileset = map.getTileset("main_lev_build_1");
-        debugger
+        
         const tilesetBg = map.getTileset("bg_spikes_tileset");
 
         map.createStaticLayer("distance", tilesetBg).setDepth(-12);
