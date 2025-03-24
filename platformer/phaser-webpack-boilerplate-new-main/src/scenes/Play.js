@@ -83,7 +83,7 @@ class Play extends Phaser.Scene {
     }
 
     createMap() {
-        const map = this.make.tilemap({key: 'level_1'});
+        const map = this.make.tilemap({key: `level_${this.getCurrentLevel()}`});
         map.addTilesetImage("main_lev_build_1", "tiles-1");
 
             // 디버깅용 로그 추가
@@ -209,6 +209,10 @@ class Play extends Phaser.Scene {
         };
     }
 
+    getCurrentLevel() {
+        return this.registry.get('level') || 1
+    }
+
     createEndOfLevel(end, player) {
         const endOfLevel = this.physics.add
             .sprite(end.x, end.y, "end")
@@ -219,6 +223,8 @@ class Play extends Phaser.Scene {
         const eolOverlap = this.physics.add.overlap(player, endOfLevel, () => {
             eolOverlap.active = false;
             console.log("End of level reached!");
+            this.registry.inc('level', 1)
+            this.scene.restart({gameStatus:'LEVEL_COMPLETED'})
         });
     }
 
