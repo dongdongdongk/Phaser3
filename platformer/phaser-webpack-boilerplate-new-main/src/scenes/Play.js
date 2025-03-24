@@ -83,7 +83,7 @@ class Play extends Phaser.Scene {
     }
 
     createMap() {
-        const map = this.make.tilemap({ key: "map" });
+        const map = this.make.tilemap({key: 'level_1'});
         map.addTilesetImage("main_lev_build_1", "tiles-1");
 
             // 디버깅용 로그 추가
