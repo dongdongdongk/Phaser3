@@ -1,18 +1,22 @@
 // import Phaser from "phaser";
 import BaseScene from "./BaseScene";
 
-class MenuScene extends BaseScene {
+class LevelScene extends BaseScene {
   constructor(config) {
-    super("MenuScene", config);
-    this.menu = [
-      { scene: "PlayScene", text: "Play" },
-      { scene: "LevelScene", text: "Levels" },
-      { scene: null, text: "Exit" },
-    ];
+    super("LevelScene", {...config, canGoBack: true});
   }
 
   create() {
     super.create();
+
+    this.menu = [];
+    const levels = this.registry.get('unlocked-levels');
+
+    for(let i = 1; i <= levels; i++) {
+        this.menu.push({
+            scene: 'PlayScene', text: `Level ${i}`, level: i
+        })
+    }
 
     this.createMenu(this.menu, (menuItem) => this.setupMenuEvents(menuItem));
   }
@@ -38,6 +42,7 @@ class MenuScene extends BaseScene {
 
     textGo.on("pointerup", () => {
       if (menuItem.scene) {
+        this.registry.set('level', menuItem.level)
         this.scene.start(menuItem.scene);
       }
 
@@ -48,4 +53,4 @@ class MenuScene extends BaseScene {
   }
 }
 
-export default MenuScene;
+export default LevelScene;

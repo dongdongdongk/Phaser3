@@ -5,7 +5,7 @@ class BaseScene extends Phaser.Scene {
     constructor(key, config) {
         super(key);
         this.config = config;
-        this.fontSize = 45
+        this.fontSize = 42
         this.lineHeight = 52;
         this.fontOptions = { fontSize:`${this.fontSize}px`, fill: '#fff'};
         this.screenCenter = [config.width/2, config.height/2]
