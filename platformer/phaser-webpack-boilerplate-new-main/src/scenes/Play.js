@@ -235,8 +235,14 @@ class Play extends Phaser.Scene {
 
         const eolOverlap = this.physics.add.overlap(player, endOfLevel, () => {
             eolOverlap.active = false;
+
+            if(this.registry.get('level') === this.config.lastLevel) {
+                this.scene.start("CreditsScene");
+                return;
+            }
             console.log("End of level reached!");
             this.registry.inc('level', 1)
+            this.registry.inc('unlocked-levels', 1)
             this.scene.restart({gameStatus:'LEVEL_COMPLETED'})
         });
     }

@@ -55,7 +55,7 @@ class Preload extends Phaser.Scene {
     startGame() {
         console.log("startGame")
         this.registry.set('level', 1)
-        this.registry.set('unlocked-levels', 2)
+        this.registry.set('unlocked-levels', 1)
         this.scene.start('MenuScene')
     }
 

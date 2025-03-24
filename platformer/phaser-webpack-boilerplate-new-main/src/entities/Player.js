@@ -32,7 +32,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
         this.jumpCount = 0;
         this.consecutiveJumps = 1;
         this.body.setSize(20, 36);
-        this.jumpSpeed = -250;
+        this.jumpSpeed = -350;
         this.isSliding = false;
         this.lastDirection = Phaser.Physics.Arcade.FACING_RIGHT;
 

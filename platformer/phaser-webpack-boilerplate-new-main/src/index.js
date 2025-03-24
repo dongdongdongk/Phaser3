@@ -5,6 +5,7 @@ import PlayScene from "./scenes/Play";
 import PreloadScene from "./scenes/Preload";
 import MenuScene from "./scenes/Menu";
 import LevelScene from "./scenes/Levels";
+import CreditsScene from "./scenes/Credits";
 
 // 1. 맵 크기 설정
 const mapWidth = 1600;
@@ -34,10 +35,11 @@ const SHARED_CONFIG = {
   rightBottomCorner: {
     x: ((width / zoomFactor) + ((width - (width / zoomFactor)) / 2)),
     y: ((height / zoomFactor) + ((height - (height / zoomFactor)) / 2)),
-  }
+  },
+  lastLevel: 2
 }
 
-const Scenes = [PreloadScene,MenuScene,LevelScene,PlayScene];
+const Scenes = [PreloadScene,MenuScene,LevelScene,PlayScene, CreditsScene];
 const createScene = Scene => new Scene(SHARED_CONFIG);
 const initScenes = () => Scenes.map(createScene);
 

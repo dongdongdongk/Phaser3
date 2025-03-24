@@ -24,10 +24,10 @@ class LevelScene extends BaseScene {
   setupMenuEvents(menuItem) {
     const textGo = menuItem.textGo;
     textGo.setInteractive();
-    textGo.setFont("Noto Sans");
+    textGo.setFont("CustomFont");
     // setFontSize 대신 setStyle로 폰트 크기와 스타일을 명확히 설정
     textGo.setStyle({
-      fontFamily: "Noto Sans",
+      fontFamily: "CustomFont",
       fontSize: "50px", // 크기 설정
       fill: "#000", // 텍스트 색상
     });

@@ -14,7 +14,7 @@ class BaseScene extends Phaser.Scene {
     create() {
         this.add.image(0, 0, "meun-bg")
         .setOrigin(0)
-        .setScale(2.7)
+        .setScale(2.8)
 
 
         if ( this.config.canGoBack) {
