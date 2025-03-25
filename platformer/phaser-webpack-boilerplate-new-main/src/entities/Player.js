@@ -43,6 +43,12 @@ class Player extends Phaser.Physics.Arcade.Sprite {
         this.body.setGravityY(500);
         this.setCollideWorldBounds(true);
         this.cursors = this.scene.input.keyboard.createCursorKeys();
+
+        this.jumpSound = this.scene.sound.add('jump', {volume: 0.2});
+        this.projectileSound = this.scene.sound.add('projectile-launch', {volume: 0.2});
+        this.stepSound = this.scene.sound.add('step', {volume: 0.2});
+        this.swipeSound = this.scene.sound.add('swipe', {volume: 0.2});
+
         this.setOrigin(0.5, 1);
         this.health = 100;
 
@@ -93,6 +99,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
             isSpaceJustDown &&
             (onFloor || this.jumpCount < this.consecutiveJumps)
         ) {
+            this.jumpSound.play();
             this.setVelocityY(this.jumpSpeed);
             this.jumpCount++;
         }
@@ -134,6 +141,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     handleAttacks() {
         this.scene.input.keyboard.on("keydown-Q", () => {
             console.log("Q key was pressed");
+            this.projectileSound.play();
             this.play("throw", true);
             this.projectiles.fireProjectile(this, "iceball");
         });
@@ -147,6 +155,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
             }
 
             console.log("E key was pressed");
+            this.swipeSound.play();
             this.play("throw", true);
             this.meleeWeapon.swing(this);
             this.timeFromLastSwing = getTimestamp();
