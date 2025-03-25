@@ -47,6 +47,8 @@ class Preload extends Phaser.Scene {
 
         this.load.spritesheet('sword-default', 'assets/weapons/sword_sheet_1.png', { frameWidth: 52, frameHeight: 32, spacing: 16 });
 
+        this.load.audio('theme', 'assets/music/theme_music.wav')
+
         this.load.once('complete', () => {
             this.startGame()
         })
